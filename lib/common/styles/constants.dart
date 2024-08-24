@@ -1,30 +1,23 @@
 import 'package:flutter/material.dart';
 class Constants {
-  static double superSmall = 8;
-  static double superSmallPlus2 = 10;
-  static double extraSmall = 12;
+
+  static double extraSmall = 10;
   static double small = 14;
-  static double smallPlus2 = 16;
   static double medium = 18;
-  static double extraMedium = 24;
-  static double big = 28;
-  static double extraBig = 32;
-
-
+  static double extraMedium = 22;
+  static double big = 26;
+  static double extraBig = 30;
 
 
   //Widgets
   static Widget whiteSpaceHorizontal(double? width){
     return SizedBox(width: width ?? 12,);
   }
+
   static Widget whiteSpaceVertical(double? height){
     return SizedBox(height: height ?? 12,);
   }
-  static Widget wrapInPadding(Widget? child, {double left = 0, double right = 0, double top = 0, double bottom = 0, double? all,}){
-    return Padding(
-      padding: all == null ? EdgeInsets.fromLTRB(left, top, right, bottom) : EdgeInsets.all(all),
-      child: child);
-  }
+
   static Widget wrapInBox(Widget? child, {double? size, Color? color, double? radius, double? innerPadding, double? height, double? width}){
     return Container(
       padding: EdgeInsets.all(innerPadding ?? 0),
@@ -37,5 +30,22 @@ class Constants {
       ),
       child: child ?? const SizedBox(width: 12, height: 12,),
     );
+  }
+
+}
+
+
+class MyText {
+  
+  big(BuildContext context, String? text, {double adjust = 0, Color? color, TextAlign? align}){
+    return Text(text ?? "", style: TextStyle(color: color ?? Theme.of(context).colorScheme.primary, fontSize: Constants.big + adjust, ), textAlign: align ?? TextAlign.start,);
+  }
+
+  small(BuildContext context, String? text, {double adjust = 0, Color? color, TextAlign? align}){
+    return Text(text ?? "", style: TextStyle(color: color ?? Theme.of(context).colorScheme.primary, fontSize: Constants.small + adjust, ), textAlign: align ?? TextAlign.start,);
+  }
+
+  medium(BuildContext context, String? text, {double adjust = 0, Color? color, TextAlign? align}){
+    return Text(text ?? "", style: TextStyle(color: color ?? Theme.of(context).colorScheme.primary, fontSize: Constants.medium + adjust, ), textAlign: align ?? TextAlign.start,);
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:tic_tac_toe/common/styles/colors.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 
 class GridTypeSelectDialog extends StatefulWidget {
@@ -64,8 +63,8 @@ class _GridTypeSelectDialogState extends State<GridTypeSelectDialog> with Single
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    MaterialButton(onPressed: (){}, child: Text("3 x 3 Grid", style: TextStyle(color: Theme.of(context).colorScheme.primary),), minWidth: screenWidth * 0.7, color: const Color.fromARGB(255, 201, 164, 209), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), height: 48,),
-                    MaterialButton(onPressed: (){}, child: Text("4 x 4 Grid", style: TextStyle(color: Theme.of(context).colorScheme.primary),), minWidth: screenWidth * 0.7, color: const Color.fromARGB(255, 201, 164, 209), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), height: 48,),
+                    CustomButton1(width: screenWidth * 0.7, text: "3 x 3 Grid",),
+                    CustomButton1(width: screenWidth * 0.7, text: "4 x 4 Grid"),
               
                   ],
                 ),
@@ -75,5 +74,22 @@ class _GridTypeSelectDialogState extends State<GridTypeSelectDialog> with Single
         ),
       ),
     );
+  }
+}
+
+class CustomButton1 extends StatelessWidget {
+  const CustomButton1({
+    super.key,
+    required this.width,
+    required this.text,
+    this.onpressed
+  });
+
+  final double width;
+  final String text;
+  final void Function()? onpressed;
+  @override
+  Widget build(BuildContext context) {
+    return MaterialButton(onPressed: onpressed ?? (){}, minWidth: width, color: const Color.fromARGB(255, 201, 164, 209), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), height: 48, child: Text(text, style: TextStyle(color: Theme.of(context).colorScheme.primary),),);
   }
 }

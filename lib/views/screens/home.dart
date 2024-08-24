@@ -4,7 +4,7 @@ import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/common/widgets/circle_box1.dart';
 import 'package:tic_tac_toe/common/widgets/drawer_dialog.dart';
 import 'package:tic_tac_toe/common/widgets/drawer_icon.dart';
-import 'package:tic_tac_toe/common/widgets/grid_type_select_dialog.dart';
+import 'package:tic_tac_toe/common/widgets/home/grid_type_select_dialog.dart';
 import 'package:tic_tac_toe/common/widgets/option_box.dart';
 import 'package:tic_tac_toe/common/widgets/rectangular_box1.dart';
 import 'package:tic_tac_toe/common/widgets/sim_popup.dart';
@@ -23,13 +23,14 @@ class Home extends StatelessWidget {
       body: SingleChildScrollView(
         child: Container(
           width: screenWidth,
-          height: screenHeight,
           decoration: BoxDecoration(
             color: const Color.fromARGB(255, 201, 164, 209).withOpacity(0.05),
           ),
           child: Column(
             children: [
-              Constants.whiteSpaceVertical(screenHeight * 0.05),
+
+              Constants.whiteSpaceVertical(48),
+
               Padding(
                 padding: const EdgeInsets.only(left: 24, right: 24),
                 child: Row(
@@ -76,6 +77,7 @@ class Home extends StatelessWidget {
                 ),
               ),
 
+              //Gridview
               Padding(
                 padding: const EdgeInsets.only(left: 24, right: 24),
                 child: GridView(
@@ -95,7 +97,7 @@ class Home extends StatelessWidget {
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: Constants
-                              .medium, // Assuming Constants.extraMedium is 16.0
+                              .medium,
                         ),
                       ),
                     ),
@@ -106,7 +108,7 @@ class Home extends StatelessWidget {
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: Constants
-                              .medium, // Assuming Constants.extraMedium is 16.0
+                              .medium,
                         ),
                       ),
                     ),
@@ -123,19 +125,20 @@ class Home extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
+                    //Grid type
                     RectangularBox1(
                       height: 64,
                       width: screenWidth,
                       padding: const EdgeInsets.all(12),
                       onTap: () {
-                        showDialog(context: context, builder: (context) => GridTypeSelectDialog());
+                        showDialog(context: context, builder: (context) => const GridTypeSelectDialog());
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           const Icon(Icons.grid_3x3_rounded),
                           Expanded(
-                              child: Text(
+                            child: Text(
                             "Grid type",
                             textAlign: TextAlign.center,
                             style: TextStyle(

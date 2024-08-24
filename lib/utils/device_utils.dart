@@ -114,4 +114,11 @@ class DeviceUtils{
       return false;
     }
   }
+
+  static bool isDeviceBig(BuildContext context){
+    if(DeviceUtils.getScreenHeight(context) > 720 && DeviceUtils.getScreenWidth(context) > 500){
+      return true;
+    }
+    return false;
+  }
 }
