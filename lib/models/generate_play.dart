@@ -1,18 +1,21 @@
 import 'dart:math';
 
 class GeneratePlayGridThree {
+
   int easyMove(List<int?> board) {
     List<int> emptySpots = [];
-    
+
     for (int i = 0; i < board.length; i++) {
       if (board[i] == null) {
         emptySpots.add(i);
       }
+
     }
     
     Random random = Random();
     return emptySpots[random.nextInt(emptySpots.length)];
   }
+  
 
   int? checkWinningMove(List<int?> board, int player) {
     List<List<int>> winningPatterns = [

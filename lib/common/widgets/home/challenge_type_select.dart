@@ -3,20 +3,20 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 
-class GridTypeSelectDialog extends StatefulWidget {
+class ChallengeTypeSelectDialog extends StatefulWidget {
   final double? left;
   final double? top;
-  const GridTypeSelectDialog({
+  const ChallengeTypeSelectDialog({
     super.key,
     this.left,
     this.top,
   });
 
   @override
-  State<GridTypeSelectDialog> createState() => _GridTypeSelectDialogState();
+  State<ChallengeTypeSelectDialog> createState() => _ChallengeTypeSelectDialogState();
 }
 
-class _GridTypeSelectDialogState extends State<GridTypeSelectDialog> with SingleTickerProviderStateMixin {
+class _ChallengeTypeSelectDialogState extends State<ChallengeTypeSelectDialog> with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation<double> scaleVal;
   late Animation<Offset> posVal;

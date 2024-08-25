@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/common/widgets/circle_box1.dart';
 import 'package:tic_tac_toe/common/widgets/drawer_dialog.dart';
 import 'package:tic_tac_toe/common/widgets/drawer_icon.dart';
+import 'package:tic_tac_toe/common/widgets/home/challenge_type_select.dart';
 import 'package:tic_tac_toe/common/widgets/home/grid_type_select_dialog.dart';
 import 'package:tic_tac_toe/common/widgets/option_box.dart';
 import 'package:tic_tac_toe/common/widgets/rectangular_box1.dart';
-import 'package:tic_tac_toe/common/widgets/sim_popup.dart';
 import 'package:tic_tac_toe/common/widgets/tic_tac_toe_text.dart';
+import 'package:tic_tac_toe/data/shared_prefs_data_1.dart';
+import 'package:tic_tac_toe/services/device_provider.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 
 class Home extends StatelessWidget {
-  Home({super.key});
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  const Home({super.key});
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = DeviceUtils.getScreenWidth(context);
     final double screenHeight = DeviceUtils.getScreenHeight(context);
+
     return Scaffold(
-      key: _scaffoldKey,
       body: SingleChildScrollView(
         child: Container(
           width: screenWidth,
@@ -28,7 +32,6 @@ class Home extends StatelessWidget {
           ),
           child: Column(
             children: [
-
               Constants.whiteSpaceVertical(48),
 
               Padding(
@@ -57,21 +60,18 @@ class Home extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     RectangularBox1(
-                      onTapDown: (dx, dy){
-                        showDialog(context: context, builder: (context) => SimPopup());
+                        onTap: () {
+                          Fluttertoast.showToast(
+                              msg: "Working on this, soon...");
+                        },
+                        child: MyText().big(context, "Playing as")),
+                    Consumer<DeviceProvider>(
+                      builder: (context, value, child) {
+                        return CircleBox1(
+                          onpressed: () => value.toggleUserChoice(),
+                          child: MyText().big(context, value.userChoice),
+                        );
                       },
-                      child: Text(
-                        "Who's Online?",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontSize: Constants.medium),
-                      ),
-                    ),
-                    CircleBox1(
-                      child: Text(
-                        "👀",
-                        style: TextStyle(fontSize: Constants.medium),
-                      ),
                     )
                   ],
                 ),
@@ -92,23 +92,21 @@ class Home extends StatelessWidget {
                   children: [
                     OptionBox(
                       child: Text(
-                        "Play online with a friend",
+                        "Play with your Computer",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
-                          fontSize: Constants
-                              .medium,
+                          fontSize: Constants.medium,
                         ),
                       ),
                     ),
                     OptionBox(
                       child: Text(
-                        "Play with your computer",
+                        "Play online with a friend",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
-                          fontSize: Constants
-                              .medium,
+                          fontSize: Constants.medium,
                         ),
                       ),
                     ),
@@ -130,15 +128,37 @@ class Home extends StatelessWidget {
                       height: 64,
                       width: screenWidth,
                       padding: const EdgeInsets.all(12),
-                      onTap: () {
-                        showDialog(context: context, builder: (context) => const GridTypeSelectDialog());
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.grid_3x3_rounded),
+                          Expanded(
+                              child: Text(
+                            "Play with a friend right here",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontSize: Constants.medium),
+                          ))
+                        ],
+                      ),
+                    ),
+                    Constants.whiteSpaceVertical(24),
+                    RectangularBox1(
+                      height: 64,
+                      width: screenWidth,
+                      padding: const EdgeInsets.all(12),
+                      onTap: () async{
+                        showDialog(
+                            context: context,
+                            builder: (context) => const GridTypeSelectDialog());
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           const Icon(Icons.grid_3x3_rounded),
                           Expanded(
-                            child: Text(
+                              child: Text(
                             "Grid type",
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -153,33 +173,19 @@ class Home extends StatelessWidget {
                       height: 64,
                       width: screenWidth,
                       padding: const EdgeInsets.all(12),
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => const ChallengeTypeSelectDialog()
+                        );
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           const Icon(Icons.grid_3x3_rounded),
                           Expanded(
                               child: Text(
-                            "Challenge type",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontSize: Constants.medium),
-                          ))
-                        ],
-                      ),
-                    ),
-                    Constants.whiteSpaceVertical(24),
-                    RectangularBox1(
-                      height: 64,
-                      width: screenWidth,
-                      padding: const EdgeInsets.all(12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const Icon(Icons.grid_3x3_rounded),
-                          Expanded(
-                              child: Text(
-                            "Ultimate Challenge",
+                            "Challenge Type",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: Theme.of(context).colorScheme.primary,
@@ -235,8 +241,6 @@ class Home extends StatelessWidget {
     );
   }
 }
-
-
 
 //Grid type
 //Challenge type
