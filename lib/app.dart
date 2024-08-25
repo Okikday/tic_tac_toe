@@ -12,7 +12,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: Themes.lightTheme,
       darkTheme: Themes.darkTheme,
-      home: const PlayWithComp(),
+      home: PlayWithComp(),
     );
   }
 }
