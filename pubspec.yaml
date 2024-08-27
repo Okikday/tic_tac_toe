@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=2.17.0 <=3.5.0"
 
 dependencies:
   flutter:
@@ -17,6 +17,7 @@ dependencies:
   lottie: ^3.1.2
   flutter_svg: ^2.0.10+1
   shared_preferences: ^2.3.2
+  another_flushbar: ^1.12.30
 
 dev_dependencies:
   flutter_test:

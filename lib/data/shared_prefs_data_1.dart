@@ -12,6 +12,8 @@ class SharedPrefsData1 {
   static const String defaultChallengeType = "normal";
   static const int defaultUserScore = 0;
   static const int defaultCompScore = 0;
+  static const List<int?> defaultGameplayList = [null, null, null, null, null, null, null, null, null];
+  static const List<String?> defaultBoardTexts = [null, null, null, null, null, null, null, null, null];
 
   static Future<void> initializeAndLoadPreferences() async {
     // Initialize and load preferences
@@ -29,6 +31,9 @@ class SharedPrefsData1 {
     }
     if (preferences.getInt("compScore") == null) {
       await setCompScore(defaultCompScore);
+    }
+    if(preferences.getStringList("boardTexts") == null || preferences.getStringList("boardTexts")!.isEmpty){
+      await setBoardTexts(defaultBoardTexts);
     }
 
     debugPrint("Successfully initialized and loaded preferences");
@@ -53,4 +58,37 @@ class SharedPrefsData1 {
   static Future<void> setCompScore(int value) async => await preferences.setInt("compScore", value);
 
   static Future<int> getCompScore() async => preferences.getInt("compScore") ?? defaultCompScore;
+
+  static Future<void> setBoardTexts(List<String?> value) async {
+    List<String> newBoardTexts = [];
+    for (var item in value) {
+      newBoardTexts.add(item ?? "null");
+    }
+    await preferences.setStringList("boardTexts", newBoardTexts);
+  }
+
+  static Future<List<String?>> getBoardTexts() async => preferences.getStringList("boardTexts") ?? defaultBoardTexts;
+
+  static Future<List<int?>> getCurrentGamePlayList() async {
+    final List<String> defaultList = [];
+    for (var item in defaultGameplayList) {
+      defaultList.add("null");
+    }
+    List<String>? listAsString = preferences.getStringList("currentGamePlayList") ?? defaultList;
+    final List<int?> list = [];
+    for (var item in listAsString) {
+      list.add(item == "null" ? null : int.parse(item));
+    }
+    return list;
+  }
+
+  static Future<void> setCurrentGamePlayList(List<int?> value) async{
+    final List<String> list = [];
+    for (var item in value) {
+      list.add(item == null ? "null" : item.toString());
+    }
+    preferences.setStringList("currentGamePlayList", list);
+  }
+
+
 }

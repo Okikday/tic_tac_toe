@@ -12,8 +12,9 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPrefs.initPrefs();
   await SharedPrefsData1.initializeAndLoadPreferences();
-  final deviceProvider = DeviceProvider();
-  await deviceProvider.initDeviceProvider();
+  final gameProvider = GameProvider(); //seems gotta do this to make sure widgets using this provider are updated at start
+  await gameProvider.initGameProvider();
+  //final deviceProvider = DeviceProvider(); await deviceProvider.initDeviceProvider;
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -21,8 +22,8 @@ void main() async{
   runApp(
     MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (context) => GameProvider()),
-      ChangeNotifierProvider(create: (context) => deviceProvider),
+      ChangeNotifierProvider(create: (context) => gameProvider),
+      //ChangeNotifierProvider(create: (context) => deviceProvider),
     ],
     child: const App(),
   ));

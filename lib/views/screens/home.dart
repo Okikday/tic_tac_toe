@@ -13,7 +13,9 @@ import 'package:tic_tac_toe/common/widgets/rectangular_box1.dart';
 import 'package:tic_tac_toe/common/widgets/tic_tac_toe_text.dart';
 import 'package:tic_tac_toe/data/shared_prefs_data_1.dart';
 import 'package:tic_tac_toe/services/device_provider.dart';
+import 'package:tic_tac_toe/services/game_provider.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
+import 'package:tic_tac_toe/views/gameplay/play_with_comp.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -62,13 +64,15 @@ class Home extends StatelessWidget {
                     RectangularBox1(
                         onTap: () {
                           Fluttertoast.showToast(
-                              msg: "Working on this, soon...");
+                              msg: "Just damn choose what you playing as:}");
                         },
                         child: MyText().big(context, "Playing as")),
-                    Consumer<DeviceProvider>(
+                    Consumer<GameProvider>(
                       builder: (context, value, child) {
                         return CircleBox1(
-                          onpressed: () => value.toggleUserChoice(),
+                          onpressed: (){
+                            value.toggleUserChoice(context);
+                          },
                           child: MyText().big(context, value.userChoice),
                         );
                       },
@@ -99,6 +103,9 @@ class Home extends StatelessWidget {
                           fontSize: Constants.medium,
                         ),
                       ),
+                      onpressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp()));
+                      },
                     ),
                     OptionBox(
                       child: Text(

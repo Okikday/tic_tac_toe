@@ -1,116 +1,179 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
+import 'package:tic_tac_toe/services/game_provider.dart';
 
 class GridBoard3by3 extends StatelessWidget {
   const GridBoard3by3({super.key});
-
   @override
-
   Widget build(BuildContext context) {
-    final int trackCount = 0;
-
-
     return Center(
-        child: ClipRRect(
-          child: Container(
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-                    gradient: LinearGradient(
-                      colors: [
-                        const Color.fromARGB(255, 176, 216, 178).withOpacity(0.5), // Lighter green
-                        const Color.fromARGB(255, 201, 164, 209).withOpacity(0.5), // Lighter purple
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-            ),
-            child: Stack(
-              children: [
-                CustomPaint(
-                  size: const Size(300, 300),
-                  painter: HashShapePainter(),
-                ),
-                // Using a Grid to layout the items
-                GridView.builder(
-                  padding: const EdgeInsets.all(0),
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 9,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3, // 3x3 grid
-                    childAspectRatio: 1.0, // Aspect ratio to make cells square
-                  ),// 3x3 grid
-                  itemBuilder: (context,index) => GestureDetector(
-                    onTap: () => {
-
-                    },
-                    child: AspectRatio(aspectRatio: 1.0, child: Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.all(0),
-                      width: 100, height: 100, color: Colors.transparent, child: MyText().big(context, "X", align: TextAlign.center, adjust: 16, color: Colors.red,), ),),
-                  ),
-                ),
+      child: ClipRRect(
+        child: Container(
+          width: 300,
+          height: 300,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(28),
+            gradient: LinearGradient(
+              colors: [
+                const Color.fromARGB(255, 176, 216, 178)
+                    .withOpacity(0.5), // Lighter green
+                const Color.fromARGB(255, 201, 164, 209)
+                    .withOpacity(0.5), // Lighter purple
               ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
           ),
+          child: Stack(
+            children: [
+              CustomPaint(
+                size: const Size(300, 300),
+                painter: HashShapePainter(),
+              ),
+              GridView.builder(
+                padding: const EdgeInsets.all(0),
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 9,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3, // 3x3 grid
+                  childAspectRatio: 1.0, // Aspect ratio to make cells square
+                ),
+                itemBuilder: (context, index) {
+                  return Consumer<GameProvider>(
+                    builder: (BuildContext context, GameProvider provider,
+                        Widget? child) {
+                      return GridItem(
+                        //text: provider.boardTexts[index] ?? "",
+                        onpressed: () {
+                          // //provider.playGame(pos: index);
+                          // provider.playGame(context, pos: index);
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
         ),
-      );
+      ),
+    );
   }
 }
 
+class GridItem extends StatefulWidget {
+  final String text;
+  final void Function()? onpressed;
+  const GridItem({
+    super.key,
+    this.onpressed,
+    this.text = "lol",
+  });
+  @override
+  State<GridItem> createState() => _GridItemState();
+}
 
+class _GridItemState extends State<GridItem>
+    with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+  late Animation<Color?> colorVal;
 
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 100),
+    );
+    colorVal = ColorTween(
+            begin: Colors.transparent, end: Colors.white.withOpacity(0.1))
+        .animate(controller);
+  }
 
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (details) {
+        controller.forward();
+        Future.delayed(Duration(milliseconds: 260), () {
+          controller.reverse();
+        });
+      },
+      onTap: () {
+        widget.onpressed == null ? () {} : widget.onpressed!();
+      },
+      child: AnimatedBuilder(
+        animation: colorVal,
+        builder: (BuildContext context, Widget? child) {
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28),
+              color: colorVal.value,
+            ),
+            child: AspectRatio(
+              aspectRatio: 1.0,
+              child: Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(0),
+                color: Colors.transparent,
+                child: MyText().big(
+                  context,
+                  widget.text == "null" ? "" : widget.text,
+                  align: TextAlign.center,
+                  adjust: 16,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-//Painter for 3 by 3 grid
+// Painter for 3 by 3 grid
 class HashShapePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white // Color of the line
-      ..style = PaintingStyle.fill; // Fill the rectangles
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
 
-    // Calculate the positions and sizes to ensure the spaces form squares
     final double thirdWidth = size.width / 3;
     final double thirdHeight = size.height / 3;
     const double lineThickness = 8.0;
     const double radius = 24.0;
 
-    // Draw the # shape with rounded rectangles
-    // Horizontal rectangles
     final RRect topRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, thirdHeight - lineThickness / 2, size.width, lineThickness),
+      Rect.fromLTWH(
+          0, thirdHeight - lineThickness / 2, size.width, lineThickness),
       const Radius.circular(radius),
     );
     final RRect bottomRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, 2 * thirdHeight - lineThickness / 2, size.width, lineThickness),
+      Rect.fromLTWH(
+          0, 2 * thirdHeight - lineThickness / 2, size.width, lineThickness),
       const Radius.circular(radius),
     );
 
-    // Vertical rectangles
     final RRect leftRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(thirdWidth - lineThickness / 2, 0, lineThickness, size.height),
+      Rect.fromLTWH(
+          thirdWidth - lineThickness / 2, 0, lineThickness, size.height),
       const Radius.circular(radius),
     );
     final RRect rightRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(2 * thirdWidth - lineThickness / 2, 0, lineThickness, size.height),
+      Rect.fromLTWH(
+          2 * thirdWidth - lineThickness / 2, 0, lineThickness, size.height),
       const Radius.circular(radius),
     );
 
-    // Draw the rectangles
     canvas.drawRRect(topRect, paint);
     canvas.drawRRect(bottomRect, paint);
     canvas.drawRRect(leftRect, paint);

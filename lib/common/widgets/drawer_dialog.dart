@@ -1,9 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/common/widgets/circle_box1.dart';
 import 'package:tic_tac_toe/common/widgets/rectangular_box1.dart';
+import 'package:tic_tac_toe/services/game_provider.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 
 class DrawerDialog extends StatefulWidget {
@@ -78,6 +80,7 @@ class _DrawerDialogState extends State<DrawerDialog> with SingleTickerProviderSt
                             ),
                   ),
                   child: Column(
+
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Divider(height: 2, color: const Color.fromARGB(255, 245, 245, 220).withOpacity(0.4),),
@@ -88,7 +91,18 @@ class _DrawerDialogState extends State<DrawerDialog> with SingleTickerProviderSt
                         CircleBox1(child: Icon(Icons.home_rounded, size: 28,),),
                         RectangularBoxIn(child: Text("Home", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
                       ],),
-                  
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CircleBox1(child: Icon(Icons.cancel_outlined, size: 28,),),
+                          RectangularBoxIn(
+                            onpressed: (){
+                             //Provider.of<GameProvider>(context, listen: false).resetGamePlay();
+                            },
+                            child: Text("Reset", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
+                        ],),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -129,20 +143,23 @@ class RectangularBoxIn extends StatelessWidget {
   final double width;
   final double height;
   final Widget? child;
+  final void Function()? onpressed;
   const RectangularBoxIn({
     super.key,
     this.width = 180,
     this.height = 48,
     this.padding,
     this.child,
+    this.onpressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
         onPressed: (){
+          onpressed == null ? (){} : onpressed!();
         },
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
         child: Container(
           padding: padding,

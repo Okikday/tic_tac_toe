@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -120,5 +121,11 @@ class DeviceUtils{
       return true;
     }
     return false;
+  }
+  
+  static void showFlushBar(BuildContext context, String msg){
+    if(context.mounted){
+      Flushbar(message: msg, duration: const Duration(milliseconds: 2000), animationDuration: const Duration(milliseconds: 250),).show(context);
+    }
   }
 }

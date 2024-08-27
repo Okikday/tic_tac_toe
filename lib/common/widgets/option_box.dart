@@ -5,8 +5,13 @@ import 'package:tic_tac_toe/common/styles/constants.dart';
 
 class OptionBox extends StatefulWidget {
   final Widget? child;
+  final void Function()? onpressed;
 
-  const OptionBox({super.key, this.child});
+  const OptionBox({
+    super.key,
+    this.child,
+    this.onpressed,
+  });
 
   @override
   State<OptionBox> createState() => _OptionBoxState();
@@ -39,19 +44,20 @@ class _OptionBoxState extends State<OptionBox> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     return ScaleTransition(
       scale: scaleVal,
-      child: MaterialButton(
-        onPressed: (){
+      child: GestureDetector(
+        onTapDown: (details){
           controller.forward(from: 0);
+          Future.delayed(Duration(milliseconds: 200), (){
+            widget.onpressed != null ? widget.onpressed!() : (){};
+          });
         },
-        padding: const EdgeInsets.all(0),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(32),
           child: Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
           border: Border.all(
-            color: const Color.fromARGB(255, 201, 164, 209).withOpacity(0.75), 
+            color: const Color.fromARGB(255, 201, 164, 209).withOpacity(0.75),
             width: 2,
           ),
           borderRadius: BorderRadius.circular(32),

@@ -37,15 +37,15 @@ class Constants {
 
 class MyText {
   
-  big(BuildContext context, String? text, {double adjust = 0, Color? color, TextAlign? align}){
-    return Text(text ?? "", style: TextStyle(color: color ?? Theme.of(context).colorScheme.primary, fontSize: Constants.big + adjust, ), textAlign: align ?? TextAlign.start,);
+  big(BuildContext context, String? text, {double adjust = 0, Color? color, TextAlign? align, bool? invertColor = false}){
+    return Text(text ?? "", style: TextStyle(color: color ?? (invertColor == true ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.primary), fontSize: Constants.big + adjust, ), textAlign: align ?? TextAlign.start,);
   }
 
-  small(BuildContext context, String? text, {double adjust = 0, Color? color, TextAlign? align}){
-    return Text(text ?? "", style: TextStyle(color: color ?? Theme.of(context).colorScheme.primary, fontSize: Constants.small + adjust, ), textAlign: align ?? TextAlign.start,);
+  small(BuildContext context, String? text, {double adjust = 0, Color? color, TextAlign? align, bool? invertColor = false}){
+    return Text(text ?? "", style: TextStyle(color: color ?? (invertColor == true ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.primary), fontSize: Constants.small + adjust, ), textAlign: align ?? TextAlign.start,);
   }
 
-  medium(BuildContext context, String? text, {double adjust = 0, Color? color, TextAlign? align}){
-    return Text(text ?? "", style: TextStyle(color: color ?? Theme.of(context).colorScheme.primary, fontSize: Constants.medium + adjust, ), textAlign: align ?? TextAlign.start,);
+  medium(BuildContext context, String? text, {double adjust = 0, Color? color, TextAlign? align, bool? invertColor = false}){
+    return Text(text ?? "", style: TextStyle(color: color ?? (invertColor == true ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.primary), fontSize: Constants.medium + adjust, ), textAlign: align ?? TextAlign.start,);
   }
 }

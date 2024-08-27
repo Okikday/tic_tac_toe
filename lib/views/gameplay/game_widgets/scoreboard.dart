@@ -26,9 +26,9 @@ class Scoreboard extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             const Color.fromARGB(255, 176, 216, 178)
-                .withOpacity(1), // Lighter green
+                .withOpacity(0.5), // Lighter green
             const Color.fromARGB(255, 201, 164, 209)
-                .withOpacity(1), // Lighter purple
+                .withOpacity(0.5), // Lighter purple
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -50,7 +50,7 @@ class Scoreboard extends StatelessWidget {
                 ],
               ),
               Constants.whiteSpaceVertical(8),
-              MyText().small(context, "You", color: MyColors.gray, adjust: -2),
+              MyText().small(context, "You", adjust: -2),
             ],
           ),
           Column(
@@ -66,8 +66,7 @@ class Scoreboard extends StatelessWidget {
                 ],
               ),
               Constants.whiteSpaceVertical(8),
-              MyText().small(context, playingWith,
-                  color: MyColors.gray, adjust: -2),
+              MyText().small(context, playingWith, adjust: -2),
             ],
           ),
         ],
