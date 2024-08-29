@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/common/widgets/circle_box1.dart';
-import 'package:tic_tac_toe/common/widgets/rectangular_box1.dart';
-import 'package:tic_tac_toe/services/game_provider.dart';
+import 'package:tic_tac_toe/services/device_provider.dart';
+import 'package:tic_tac_toe/services/game_provider_3_by_3.dart';
+import 'package:tic_tac_toe/services/game_provider_4_by_4.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 
 class DrawerDialog extends StatefulWidget {
@@ -22,7 +23,7 @@ class _DrawerDialogState extends State<DrawerDialog> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 350));
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 350));
     scaleVal = Tween<double>(begin: 0.25, end: 1,).animate(controller);
     controller.forward();
 
@@ -89,7 +90,9 @@ class _DrawerDialogState extends State<DrawerDialog> with SingleTickerProviderSt
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                         CircleBox1(child: Icon(Icons.home_rounded, size: 28,),),
-                        RectangularBoxIn(child: Text("Home", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
+                        RectangularBoxIn(
+                          onpressed: () => Navigator.pop(context),
+                          child: Text("Home", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
                       ],),
 
                       Row(
@@ -98,7 +101,13 @@ class _DrawerDialogState extends State<DrawerDialog> with SingleTickerProviderSt
                           CircleBox1(child: Icon(Icons.cancel_outlined, size: 28,),),
                           RectangularBoxIn(
                             onpressed: (){
-                             //Provider.of<GameProvider>(context, listen: false).resetGamePlay();
+                             if(Provider.of<DeviceProvider>(context, listen: false).gridType == 3){
+                              Provider.of<GameProvider3by3>(context, listen: false).resetGamePlay(context);
+                             }
+                             if(Provider.of<DeviceProvider>(context,  listen: false).gridType == 4){
+                              Provider.of<GameProvider4by4>(context, listen: false).resetGamePlay(context);
+                             }
+                             Navigator.pop(context);
                             },
                             child: Text("Reset", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
                         ],),

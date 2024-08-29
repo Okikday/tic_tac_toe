@@ -1,34 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
-import 'package:tic_tac_toe/services/game_provider_3_by_3.dart';
+import 'package:tic_tac_toe/services/game_provider_4_by_4.dart';
 
-class GridBoard3by3 extends StatefulWidget {
-  const GridBoard3by3({super.key});
+class GridBoard4by4 extends StatefulWidget {
+  const GridBoard4by4({super.key});
 
   @override
-  State<GridBoard3by3> createState() => _GridBoard3by3State();
+  State<GridBoard4by4> createState() => _GridBoard4by4State();
 }
 
-class _GridBoard3by3State extends State<GridBoard3by3> {
+class _GridBoard4by4State extends State<GridBoard4by4> {
   @override
   void initState() {
     super.initState();
-
     // Ensure the computer plays first if the user is 'O'
     WidgetsBinding.instance.addPostFrameCallback((_) {
       debugPrint("Just entered the game");
-      final provider = Provider.of<GameProvider3by3>(context, listen: false);
+      final provider = Provider.of<GameProvider4by4>(context, listen: false);
       debugPrint(provider.playerTurn.toString());
       debugPrint(provider.userChoice.toString());
       if (provider.playerTurn == null && provider.userChoice == 'O') {
         provider.playGame(context); // Computer plays first
       }
     });
-
-    
   }
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -51,26 +47,22 @@ class _GridBoard3by3State extends State<GridBoard3by3> {
             children: [
               CustomPaint(
                 size: const Size(300, 300),
-                painter: HashShapePainter(),
+                painter: HashShapePainter4x4(),
               ),
               GridView.builder(
                 padding: const EdgeInsets.all(0),
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: 9,
+                itemCount: 16,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
+                  crossAxisCount: 4,
                   childAspectRatio: 1.0,
                 ),
                 itemBuilder: (context, index) {
-                  return Consumer<GameProvider3by3>(
-                    builder: (context, provider, child) {
-                      return GridItem(
-                        text: context.watch<GameProvider3by3>().boardTexts[index] ?? "",
-                        onpressed: () {
-                          print("$index clicked!");
-                          context.read<GameProvider3by3>().playGame(context, pos: index);
-                        },
-                      );
+                  return GridItem(
+                    text: context.watch<GameProvider4by4>().boardTexts[index] ?? "",
+                    onpressed: () {
+                      print("$index clicked!");
+                      context.read<GameProvider4by4>().playGame(context, pos: index);
                     },
                   );
                 },
@@ -82,7 +74,6 @@ class _GridBoard3by3State extends State<GridBoard3by3> {
     );
   }
 }
-
 
 class GridItem extends StatefulWidget {
   final String text;
@@ -106,7 +97,7 @@ class _GridItemState extends State<GridItem>
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 100),
     );
     colorVal = ColorTween(
             begin: Colors.transparent, end: Colors.white.withOpacity(0.1))
@@ -124,7 +115,7 @@ class _GridItemState extends State<GridItem>
     return GestureDetector(
       onTapDown: (details) {
         controller.forward();
-        Future.delayed(Duration(milliseconds: 260), () {
+        Future.delayed(const Duration(milliseconds: 260), () {
           controller.reverse();
         });
       },
@@ -161,45 +152,31 @@ class _GridItemState extends State<GridItem>
   }
 }
 
-// Painter for 3 by 3 grid
-class HashShapePainter extends CustomPainter {
+// Painter for 4 by 4 grid
+class HashShapePainter4x4 extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.fill;
 
-    final double thirdWidth = size.width / 3;
-    final double thirdHeight = size.height / 3;
+    final double quarterWidth = size.width / 4;
+    final double quarterHeight = size.height / 4;
     const double lineThickness = 8.0;
     const double radius = 24.0;
 
-    final RRect topRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-          0, thirdHeight - lineThickness / 2, size.width, lineThickness),
-      const Radius.circular(radius),
-    );
-    final RRect bottomRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-          0, 2 * thirdHeight - lineThickness / 2, size.width, lineThickness),
-      const Radius.circular(radius),
-    );
-
-    final RRect leftRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-          thirdWidth - lineThickness / 2, 0, lineThickness, size.height),
-      const Radius.circular(radius),
-    );
-    final RRect rightRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-          2 * thirdWidth - lineThickness / 2, 0, lineThickness, size.height),
-      const Radius.circular(radius),
-    );
-
-    canvas.drawRRect(topRect, paint);
-    canvas.drawRRect(bottomRect, paint);
-    canvas.drawRRect(leftRect, paint);
-    canvas.drawRRect(rightRect, paint);
+    for (int i = 1; i < 4; i++) {
+      final RRect horizontalRect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(0, i * quarterHeight - lineThickness / 2, size.width, lineThickness),
+        const Radius.circular(radius),
+      );
+      final RRect verticalRect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(i * quarterWidth - lineThickness / 2, 0, lineThickness, size.height),
+        const Radius.circular(radius),
+      );
+      canvas.drawRRect(horizontalRect, paint);
+      canvas.drawRRect(verticalRect, paint);
+    }
   }
 
   @override

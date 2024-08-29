@@ -1,43 +1,72 @@
-// import 'package:tic_tac_toe/data/gameplay_data.dart';
-// import 'package:tic_tac_toe/data/shared_prefs_data_1.dart';
-// import 'package:tic_tac_toe/services/game_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/data/gameplay_data.dart';
 
-// class Gameplay {
+class Gameplay {
 
-//   int? checkWinner(listToCheck){
-//     final int count = GameProvider().count;
-//     final List gameplayList = SharedPrefsData1.defaultGameplayList;
-//     int winCount = 0;
+  int? checkWinnerGrid3(List<int?> listToCheck, int count) {
+    
+    // Ensure there are enough moves to determine a winner
+    if (count < 5) {
+      return null; // Not enough moves for a winner
+    }
 
-//     if(count >= 4){
+    int counter = 0;
+    debugPrint("Checkwinner: count: $count");
 
-//       for(var data in GameplayData.winningPatterns){ //the list in it
-//       for(int i = 0; i < 9; i++){
-//         if(data[i] == 0 && gameplayList[i] == 0){
-//           winCount++;
-//         }
-//       }
-//     }
-//     if(winCount == 3){
-//       return 0;
-//     }
-//     winCount = 0;
+    // Checking for 0 which stands for O
+    for (var pattern in GameplayData.winningPatternsGrid3) {
+      counter = 0;
+      for(int i = 0; i < listToCheck.length; i++){
+        if(pattern[i] == 0 && listToCheck[i] == 0){
+          counter++;
+        }
+        if(counter == 3){
+          return 0;
+        }
+      }
+    }
 
-//     for(var data in GameplayData.winningPatterns){
-//       for(int i = 0; i < 9; i++){
-//         if(data[i] == 0 && gameplayList[i] == 1){
-//           winCount++;
-//         }
-//       }
-//     }
-//     }
+    counter = 0;
 
-//     if(winCount == 3){
-//       return 1;
-//     }
-//     return null;
+    for (var pattern in GameplayData.winningPatternsGrid3) {
+      counter = 0;
+      for(int i = 0; i < listToCheck.length; i++){
+        if(pattern[i] == 0 && listToCheck[i] == 1){
+          counter++;
+        }
+        if(counter == 3){
+          return 1;
+        }
+      }
+    }
 
-//   }
+    return null; // No winner
+  }
 
-  
-// }
+  int? checkWinnerGrid4(List<int?> listToCheck, int count) {
+  // Ensure there are enough moves to determine a winner
+  if (count < 7) { // Minimum 7 moves required for a winner in a 4x4 grid
+    return null;
+  }
+
+  // Checking for 0 which stands for O
+  for (var pattern in GameplayData.winningPatternsGrid4) {
+    if (pattern.every((index) => listToCheck[index] == 0)) {
+      return 0; // O wins
+    }
+  }
+
+  // Checking for 1 which stands for X
+  for (var pattern in GameplayData.winningPatternsGrid4) {
+    if (pattern.every((index) => listToCheck[index] == 1)) {
+      return 1; // X wins
+    }
+  }
+
+  return null; // No winner
+}
+
+
+
+
+}

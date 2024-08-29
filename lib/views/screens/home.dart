@@ -11,11 +11,11 @@ import 'package:tic_tac_toe/common/widgets/home/grid_type_select_dialog.dart';
 import 'package:tic_tac_toe/common/widgets/option_box.dart';
 import 'package:tic_tac_toe/common/widgets/rectangular_box1.dart';
 import 'package:tic_tac_toe/common/widgets/tic_tac_toe_text.dart';
-import 'package:tic_tac_toe/data/shared_prefs_data_1.dart';
 import 'package:tic_tac_toe/services/device_provider.dart';
-import 'package:tic_tac_toe/services/game_provider.dart';
+import 'package:tic_tac_toe/services/game_provider_3_by_3.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
-import 'package:tic_tac_toe/views/gameplay/play_with_comp.dart';
+import 'package:tic_tac_toe/views/gameplay/play_with_comp_3_by_3.dart';
+import 'package:tic_tac_toe/views/gameplay/play_with_comp_4_by_4.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -67,7 +67,7 @@ class Home extends StatelessWidget {
                               msg: "Just damn choose what you playing as:}");
                         },
                         child: MyText().big(context, "Playing as")),
-                    Consumer<GameProvider>(
+                    Consumer<GameProvider3by3>(
                       builder: (context, value, child) {
                         return CircleBox1(
                           onpressed: (){
@@ -104,7 +104,7 @@ class Home extends StatelessWidget {
                         ),
                       ),
                       onpressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Provider.of<DeviceProvider>(context, listen: false).gridType == 3 ? const PlayWithComp3By3() : const PlayWithComp4By4()));
                       },
                     ),
                     OptionBox(

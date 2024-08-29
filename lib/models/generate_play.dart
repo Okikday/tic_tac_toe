@@ -1,20 +1,27 @@
 import 'dart:math';
 
+import 'package:tic_tac_toe/data/gameplay_data.dart';
+
 class GeneratePlayGridThree {
 
   int easyMove(List<int?> board) {
-    List<int> emptySpots = [];
+  List<int> emptySpots = [];
 
-    for (int i = 0; i < board.length; i++) {
-      if (board[i] == null) {
-        emptySpots.add(i);
-      }
-
+  for (int i = 0; i < board.length; i++) {
+    if (board[i] == null) {
+      emptySpots.add(i);
     }
-    
-    Random random = Random();
-    return emptySpots[random.nextInt(emptySpots.length)];
   }
+
+  if (emptySpots.isEmpty) {
+    throw Exception("No empty spots available on the board");
+    // Or handle the situation according to your game logic
+  }
+
+  Random random = Random();
+  return emptySpots[random.nextInt(emptySpots.length)];
+}
+
   
 
   int? checkWinningMove(List<int?> board, int player) {
@@ -153,4 +160,47 @@ class Move {
   int score;
 
   Move({this.index = -1, this.score = 0});
+}
+
+
+class GeneratePlayGridFour {
+  
+
+  int easyMove(List<int?> gameplayList) {
+    final availablePositions = <int>[];
+    for (int i = 0; i < gameplayList.length; i++) {
+      if (gameplayList[i] == null) {
+        availablePositions.add(i);
+      }
+    }
+    return availablePositions[Random().nextInt(availablePositions.length)];
+  }
+
+  int mediumMove(List<int?> gameplayList, int currentPlayer) {
+    // Check for a winning move first
+    for (var pattern in GameplayData.winningPatternsGrid4) {
+      int? winningPosition = findWinningPosition(gameplayList, pattern, currentPlayer);
+      if (winningPosition != null) {
+        return winningPosition;
+      }
+    }
+    // If no winning move, return an easy move
+    return easyMove(gameplayList);
+  }
+
+  int? findWinningPosition(List<int?> gameplayList, List<int> pattern, int currentPlayer) {
+    int count = 0;
+    int? emptyPosition;
+    for (var pos in pattern) {
+      if (gameplayList[pos] == currentPlayer) {
+        count++;
+      } else if (gameplayList[pos] == null) {
+        emptyPosition = pos;
+      }
+    }
+    if (count == 3 && emptyPosition != null) {
+      return emptyPosition;
+    }
+    return null;
+  }
 }

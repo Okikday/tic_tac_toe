@@ -2,6 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/services/device_provider.dart';
+import 'package:tic_tac_toe/services/game_provider_3_by_3.dart';
+import 'package:tic_tac_toe/services/game_provider_4_by_4.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 
 class GridTypeSelectDialog extends StatefulWidget {
@@ -64,8 +68,18 @@ class _GridTypeSelectDialogState extends State<GridTypeSelectDialog> with Single
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    CustomButton1(width: screenWidth * 0.7, text: "3 x 3 Grid", onpressed: () => Fluttertoast.showToast(msg: "Lol, still 3x3 for now"),),
-                    CustomButton1(width: screenWidth * 0.7, text: "4 x 4 Grid", onpressed: () => Fluttertoast.showToast(msg: "Lol, still 3x3 for now"),),
+                    CustomButton1(width: screenWidth * 0.7, text: "3 x 3 Grid", onpressed: () {
+                      Provider.of<DeviceProvider>(context, listen: false).changeGridType(toGrid3: true);
+                      Provider.of<GameProvider3by3>(context, listen: false).resetGameSession(context);
+                      Navigator.pop(context);
+                      Fluttertoast.showToast(msg: "Changed Grid type to 3 by 3");
+                    }),
+                    CustomButton1(width: screenWidth * 0.7, text: "4 x 4 Grid", onpressed: (){
+                      Provider.of<DeviceProvider>(context, listen: false).changeGridType(toGrid3: false);
+                      Provider.of<GameProvider4by4>(context, listen: false).resetGameSession(context);
+                      Navigator.pop(context);
+                      Fluttertoast.showToast(msg: "Changed Grid type to 4 by 4");
+                    }),
               
                   ],
                 ),
