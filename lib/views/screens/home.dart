@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -14,8 +16,12 @@ import 'package:tic_tac_toe/common/widgets/tic_tac_toe_text.dart';
 import 'package:tic_tac_toe/services/device_provider.dart';
 import 'package:tic_tac_toe/services/game_provider_3_by_3.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
+import 'package:tic_tac_toe/views/authentication/sign_up.dart';
+import 'package:tic_tac_toe/views/gameplay/online_folks.dart';
+import 'package:tic_tac_toe/views/gameplay/play_online.dart';
 import 'package:tic_tac_toe/views/gameplay/play_with_comp_3_by_3.dart';
 import 'package:tic_tac_toe/views/gameplay/play_with_comp_4_by_4.dart';
+import 'package:tic_tac_toe/views/gameplay/play_with_comp_5_by_5.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -104,7 +110,16 @@ class Home extends StatelessWidget {
                         ),
                       ),
                       onpressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Provider.of<DeviceProvider>(context, listen: false).gridType == 3 ? const PlayWithComp3By3() : const PlayWithComp4By4()));
+                        final int check = Provider.of<DeviceProvider>(context, listen: false).gridType;
+                        if(check == 3){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp3By3()));
+                        }else if(check == 4){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp4By4()));
+                        }else if(check == 5){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp5By5()));
+                        }else{
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp3By3()));
+                        }
                       },
                     ),
                     OptionBox(
@@ -116,6 +131,10 @@ class Home extends StatelessWidget {
                           fontSize: Constants.medium,
                         ),
                       ),
+                      onpressed: () {
+                        //if(hasLoggedIn == true){}
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Provider.of<DeviceProvider>(context).isUserLoggedIn == true ? const OnlineFolks() : const SignUp()));
+                      },
                     ),
                   ],
                 ),
@@ -211,6 +230,10 @@ class Home extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 24, right: 24),
                 child: RectangularBox1(
+                  onTap: ()async{
+                    await FirebaseAuth.instance.signOut();
+                    if(context.mounted)Provider.of<DeviceProvider>(context, listen: false).resetUserDetails();
+                    },
                   padding: const EdgeInsets.all(16),
                   width: screenWidth,
                   height: 96,

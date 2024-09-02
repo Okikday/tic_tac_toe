@@ -62,7 +62,7 @@ class GameProvider3by3 extends ChangeNotifier {
       
       // Initial setup: Determine the starting player
       _playerTurn = 0; //Meaning X for 1 plays first
-      _currentGameUserChoice = _userChoice;
+      _currentGameUserChoice = _userChoice = await SharedPrefsData1.getUserChoice();
       _hasCurrentGameSession = true; //Modifying has current game session to true
       await SharedPrefsData1.setCurrentGameUserChoice(_currentGameUserChoice);
       debugPrint("Behold, computer plays first");
@@ -82,7 +82,7 @@ class GameProvider3by3 extends ChangeNotifier {
       }
     }
 
-    if(pos != null && _userChoice == 'X'){
+    if(pos != null && _userChoice == 'X' && _gameplayList[pos] == null){
       
       _playerTurn = 0;
       _hasCurrentGameSession = true; //Modifying has current game session to true
@@ -106,7 +106,7 @@ class GameProvider3by3 extends ChangeNotifier {
 
   }
    
-  if(_playerTurn == 1 && _currentGameUserChoice == 'X' && pos != null && _gameplayList.contains(null)){
+  if(_playerTurn == 1 && _currentGameUserChoice == 'X' && pos != null && _gameplayList.contains(null) && _gameplayList[pos] == null){
     _playerTurn = 0;
     if(context.mounted){
       xPlay(context, pos);
@@ -120,7 +120,7 @@ class GameProvider3by3 extends ChangeNotifier {
       });
   }
 
-  if(_playerTurn == 0 && _currentGameUserChoice == 'O' && pos != null && _gameplayList.contains(null)){
+  if(_playerTurn == 0 && _currentGameUserChoice == 'O' && pos != null && _gameplayList.contains(null) && _gameplayList[pos] == null){
     _playerTurn = 1;
     if(context.mounted){
       oPlay(context, pos);

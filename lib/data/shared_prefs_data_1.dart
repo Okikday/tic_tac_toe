@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tic_tac_toe/services/shared_prefs.dart';
+import 'package:tic_tac_toe/data/initData/shared_prefs.dart';
 
 class SharedPrefsData1 {
 
@@ -13,9 +13,11 @@ class SharedPrefsData1 {
   static const int defaultUserScore = 0;
   static const int defaultCompScore = 0;
   static const List<int?> defaultGameplayListGrid3 = [null, null, null, null, null, null, null, null, null];
-  static const List<int?> defaultGameplayListGrid4 = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
   static const List<String?> defaultBoardTextsGrid3 = [null, null, null, null, null, null, null, null, null];
+  static const List<int?> defaultGameplayListGrid4 = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
   static const List<String?> defaultBoardTextsGrid4 = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
+  static const List<int?> defaultGameplayListGrid5 = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
+  static const List<String?> defaultBoardTextsGrid5 = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
   
 
   static Future<void> initializeAndLoadPreferences() async {
@@ -99,9 +101,19 @@ class SharedPrefsData1 {
     await preferences.setStringList("boardTextsGrid4", newBoardTexts);
   }
 
+  static Future<void> setBoardTextsGrid5(List<String?> value) async {
+    List<String> newBoardTexts = [];
+    for (var item in value) {
+      newBoardTexts.add(item ?? "null");
+    }
+    await preferences.setStringList("boardTextsGrid5", newBoardTexts);
+  }
+
   static Future<List<String?>> getBoardTextsGrid3() async => preferences.getStringList("boardTextsGrid3") ?? defaultBoardTextsGrid3;
 
   static Future<List<String?>> getBoardTextsGrid4() async => preferences.getStringList("boardTextsGrid4") ?? defaultBoardTextsGrid4;
+
+  static Future<List<String?>> getBoardTextsGrid5() async => preferences.getStringList("boardTextsGrid5") ?? defaultBoardTextsGrid5;
 
   static Future<List<int?>> getCurrentGamePlayListGrid3() async {
     final List<String> defaultList = [];
@@ -131,6 +143,20 @@ class SharedPrefsData1 {
     return list;
   }
 
+  static Future<List<int?>> getCurrentGamePlayListGrid5() async {
+    final List<String> defaultList = [];
+    // ignore: unused_local_variable
+    for (var item in defaultGameplayListGrid5) {
+      defaultList.add("null");
+    }
+    List<String>? listAsString = preferences.getStringList("currentGameplayListGrid5") ?? defaultList;
+    final List<int?> list = [];
+    for (var item in listAsString) {
+      list.add(item == "null" ? null : int.parse(item));
+    }
+    return list;
+  }
+
   static Future<void> setCurrentGamePlayListGrid3(List<int?> value) async{
     final List<String> list = [];
     for (var item in value) {
@@ -147,4 +173,12 @@ class SharedPrefsData1 {
     preferences.setStringList("currentGameplayListGrid4", list);
   }
 
+  static Future<void> setCurrentGamePlayListGrid5(List<int?> value) async{
+    final List<String> list = [];
+    for (var item in value) {
+      list.add(item == null ? "null" : item.toString());
+    }
+    preferences.setStringList("currentGameplayListGrid5", list);
+  }
+  
 }

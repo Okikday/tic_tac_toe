@@ -5,6 +5,7 @@ import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/services/device_provider.dart';
 import 'package:tic_tac_toe/services/game_provider_3_by_3.dart';
 import 'package:tic_tac_toe/services/game_provider_4_by_4.dart';
+import 'package:tic_tac_toe/services/game_provider_5_by_5.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 
 class GameResultDialog extends StatefulWidget {
@@ -91,7 +92,7 @@ class _GameResultDialogState extends State<GameResultDialog>
                           child: Icon(Icons.person),
                         ),
                         const SizedBox(width: 16),
-                        MyText().medium(context, widget.result)
+                        MyText().medium(context, widget.result, invertColor: true)
                       ],
                     ),
                     const SizedBox(height: 40),
@@ -110,6 +111,11 @@ class _GameResultDialogState extends State<GameResultDialog>
                               Navigator.pop(context);
                               Navigator.pop(context);
                             }
+                            if(Provider.of<DeviceProvider>(context, listen: false).gridType == 5){
+                              Provider.of<GameProvider5by5>(context, listen: false).resetGamePlay(context);
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.redAccent,
@@ -118,7 +124,7 @@ class _GameResultDialogState extends State<GameResultDialog>
                             ),
                             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           ),
-                          child: MyText().small(context, "Reset game"),
+                          child: MyText().small(context, "Reset game", invertColor: true),
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -132,6 +138,11 @@ class _GameResultDialogState extends State<GameResultDialog>
                             Navigator.pop(context);
                             Provider.of<GameProvider4by4>(context, listen: false).playGame(context);
                             }
+                            if(Provider.of<DeviceProvider>(context, listen: false).gridType == 5){
+                            Provider.of<GameProvider5by5>(context, listen: false).resetGameSession(context);
+                            Navigator.pop(context);
+                            Provider.of<GameProvider5by5>(context, listen: false).playGame(context);
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
@@ -140,7 +151,7 @@ class _GameResultDialogState extends State<GameResultDialog>
                             ),
                             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           ),
-                          child: MyText().small(context, "Continue"),
+                          child: MyText().small(context, "Continue", invertColor: true),
                         ),
                       ],
                     ),

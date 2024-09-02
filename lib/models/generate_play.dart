@@ -163,9 +163,17 @@ class Move {
 }
 
 
+
+
+
+
+
+
+
+
+
 class GeneratePlayGridFour {
   
-
   int easyMove(List<int?> gameplayList) {
     final availablePositions = <int>[];
     for (int i = 0; i < gameplayList.length; i++) {
@@ -188,6 +196,28 @@ class GeneratePlayGridFour {
     return easyMove(gameplayList);
   }
 
+  int hardMove(List<int?> gameplayList, int currentPlayer) {
+    // 1. Check for a winning move first
+    for (var pattern in GameplayData.winningPatternsGrid4) {
+      int? winningPosition = findWinningPosition(gameplayList, pattern, currentPlayer);
+      if (winningPosition != null) {
+        return winningPosition;
+      }
+    }
+
+    // 2. Block the opponent from winning
+    int opponent = (currentPlayer == 0) ? 1 : 0;
+    for (var pattern in GameplayData.winningPatternsGrid4) {
+      int? blockingPosition = findWinningPosition(gameplayList, pattern, opponent);
+      if (blockingPosition != null) {
+        return blockingPosition;
+      }
+    }
+
+    // 3. Otherwise, make the best strategic move
+    return easyMove(gameplayList);
+  }
+
   int? findWinningPosition(List<int?> gameplayList, List<int> pattern, int currentPlayer) {
     int count = 0;
     int? emptyPosition;
@@ -198,7 +228,75 @@ class GeneratePlayGridFour {
         emptyPosition = pos;
       }
     }
-    if (count == 3 && emptyPosition != null) {
+    if (count == 2 && emptyPosition != null) {
+      return emptyPosition;
+    }
+    return null;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+class GeneratePlayGridFive {
+  int easyMove(List<int?> gameplayList) {
+    final availablePositions = <int>[];
+    for (int i = 0; i < gameplayList.length; i++) {
+      if (gameplayList[i] == null) {
+        availablePositions.add(i);
+      }
+    }
+    return availablePositions[Random().nextInt(availablePositions.length)];
+  }
+
+  int mediumMove(List<int?> gameplayList, int currentPlayer) {
+    // Check for a winning move first
+    for (var pattern in GameplayData.winningPatternsGrid5) {
+      int? winningPosition = findWinningPosition(gameplayList, pattern, currentPlayer);
+      if (winningPosition != null) {
+        return winningPosition;
+      }
+    }
+    // If no winning move, return an easy move
+    return easyMove(gameplayList);
+  }
+
+  int hardMove(List<int?> gameplayList, int currentPlayer, int opponent) {
+    // Check for a winning move first
+    for (var pattern in GameplayData.winningPatternsGrid5) {
+      int? winningPosition = findWinningPosition(gameplayList, pattern, currentPlayer);
+      if (winningPosition != null) {
+        return winningPosition;
+      }
+    }
+    // Block opponent's winning move
+    for (var pattern in GameplayData.winningPatternsGrid5) {
+      int? blockingPosition = findWinningPosition(gameplayList, pattern, opponent);
+      if (blockingPosition != null) {
+        return blockingPosition;
+      }
+    }
+    // Otherwise, make a medium move
+    return mediumMove(gameplayList, currentPlayer);
+  }
+
+  int? findWinningPosition(List<int?> gameplayList, List<int> pattern, int player) {
+    int count = 0;
+    int? emptyPosition;
+    for (var pos in pattern) {
+      if (gameplayList[pos] == player) {
+        count++;
+      } else if (gameplayList[pos] == null) {
+        emptyPosition = pos;
+      }
+    }
+    if (count == 4 && emptyPosition != null) { // Adjust for 5x5 grid where 5 in a row is a win
       return emptyPosition;
     }
     return null;

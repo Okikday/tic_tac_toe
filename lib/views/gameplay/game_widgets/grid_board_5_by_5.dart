@@ -1,32 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
-import 'package:tic_tac_toe/services/game_provider_3_by_3.dart';
 
-class GridBoard3by3 extends StatefulWidget {
+class GridBoard5by5 extends StatefulWidget {
   final void Function(int index) onpressed;
   final List<String?> boardTexts;
-  
-  const GridBoard3by3({
+  const GridBoard5by5({
     super.key,
     required this.boardTexts,
     required this.onpressed,
   });
 
   @override
-  State<GridBoard3by3> createState() => _GridBoard3by3State();
+  State<GridBoard5by5> createState() => _GridBoard5by5State();
 }
 
-class _GridBoard3by3State extends State<GridBoard3by3> {
- 
+class _GridBoard5by5State extends State<GridBoard5by5> {
+  
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: ClipRRect(
         child: Container(
-          width: 300,
-          height: 300,
+          width: 375, // Adjusted for 5x5 grid
+          height: 375,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(28),
             gradient: LinearGradient(
@@ -41,27 +38,23 @@ class _GridBoard3by3State extends State<GridBoard3by3> {
           child: Stack(
             children: [
               CustomPaint(
-                size: const Size(300, 300),
-                painter: HashShapePainter(),
+                size: const Size(375, 375), // Adjusted for 5x5 grid
+                painter: HashShapePainter5x5(),
               ),
               GridView.builder(
                 padding: const EdgeInsets.all(0),
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: 9,
+                itemCount: 25, // Adjusted for 5x5 grid
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
+                  crossAxisCount: 5, // Adjusted for 5x5 grid
                   childAspectRatio: 1.0,
                 ),
                 itemBuilder: (context, index) {
-                  return Consumer<GameProvider3by3>(
-                    builder: (context, provider, child) {
-                      return GridItem(
-                        text: widget.boardTexts[index] ?? '',
-                        onpressed: () {
-                          debugPrint("$index clicked!");
-                          widget.onpressed(index);
-                        },
-                      );
+                  return GridItem(
+                    text: widget.boardTexts[index] ?? "",
+                    onpressed: () {
+                      debugPrint("$index clicked!");
+                      widget.onpressed(index);
                     },
                   );
                 },
@@ -73,7 +66,6 @@ class _GridBoard3by3State extends State<GridBoard3by3> {
     );
   }
 }
-
 
 class GridItem extends StatefulWidget {
   final String text;
@@ -152,45 +144,31 @@ class _GridItemState extends State<GridItem>
   }
 }
 
-// Painter for 3 by 3 grid
-class HashShapePainter extends CustomPainter {
+
+class HashShapePainter5x5 extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.fill;
 
-    final double thirdWidth = size.width / 3;
-    final double thirdHeight = size.height / 3;
+    final double fifthWidth = size.width / 5;
+    final double fifthHeight = size.height / 5;
     const double lineThickness = 8.0;
     const double radius = 24.0;
 
-    final RRect topRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-          0, thirdHeight - lineThickness / 2, size.width, lineThickness),
-      const Radius.circular(radius),
-    );
-    final RRect bottomRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-          0, 2 * thirdHeight - lineThickness / 2, size.width, lineThickness),
-      const Radius.circular(radius),
-    );
-
-    final RRect leftRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-          thirdWidth - lineThickness / 2, 0, lineThickness, size.height),
-      const Radius.circular(radius),
-    );
-    final RRect rightRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-          2 * thirdWidth - lineThickness / 2, 0, lineThickness, size.height),
-      const Radius.circular(radius),
-    );
-
-    canvas.drawRRect(topRect, paint);
-    canvas.drawRRect(bottomRect, paint);
-    canvas.drawRRect(leftRect, paint);
-    canvas.drawRRect(rightRect, paint);
+    for (int i = 1; i < 5; i++) {
+      final RRect horizontalRect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(0, i * fifthHeight - lineThickness / 2, size.width, lineThickness),
+        const Radius.circular(radius),
+      );
+      final RRect verticalRect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(i * fifthWidth - lineThickness / 2, 0, lineThickness, size.height),
+        const Radius.circular(radius),
+      );
+      canvas.drawRRect(horizontalRect, paint);
+      canvas.drawRRect(verticalRect, paint);
+    }
   }
 
   @override

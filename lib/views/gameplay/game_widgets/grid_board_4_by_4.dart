@@ -1,30 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
-import 'package:tic_tac_toe/services/game_provider_4_by_4.dart';
 
 class GridBoard4by4 extends StatefulWidget {
-  const GridBoard4by4({super.key});
+  final void Function(int index) onpressed;
+  final List<String?> boardTexts;
+  const GridBoard4by4({
+    super.key,
+    required this.boardTexts,
+    required this.onpressed,
+  });
 
   @override
   State<GridBoard4by4> createState() => _GridBoard4by4State();
 }
 
 class _GridBoard4by4State extends State<GridBoard4by4> {
-  @override
-  void initState() {
-    super.initState();
-    // Ensure the computer plays first if the user is 'O'
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      debugPrint("Just entered the game");
-      final provider = Provider.of<GameProvider4by4>(context, listen: false);
-      debugPrint(provider.playerTurn.toString());
-      debugPrint(provider.userChoice.toString());
-      if (provider.playerTurn == null && provider.userChoice == 'O') {
-        provider.playGame(context); // Computer plays first
-      }
-    });
-  }
+ 
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -59,10 +50,10 @@ class _GridBoard4by4State extends State<GridBoard4by4> {
                 ),
                 itemBuilder: (context, index) {
                   return GridItem(
-                    text: context.watch<GameProvider4by4>().boardTexts[index] ?? "",
+                    text: widget.boardTexts[index] ?? "",
                     onpressed: () {
-                      print("$index clicked!");
-                      context.read<GameProvider4by4>().playGame(context, pos: index);
+                      debugPrint("$index clicked!");
+                      widget.onpressed(index);
                     },
                   );
                 },

@@ -67,6 +67,31 @@ class Gameplay {
 }
 
 
+int? checkWinnerGrid5(List<int?> listToCheck, int count) {
+  // Ensure there are enough moves to determine a winner
+  if (count < 9) { // Minimum 9 moves required for a winner in a 5x5 grid
+    return null;
+  }
+
+  // Checking for 0 which stands for O
+  for (var pattern in GameplayData.winningPatternsGrid5) {
+    if (pattern.every((index) => listToCheck[index] == 0)) {
+      return 0; // O wins
+    }
+  }
+
+  // Checking for 1 which stands for X
+  for (var pattern in GameplayData.winningPatternsGrid5) {
+    if (pattern.every((index) => listToCheck[index] == 1)) {
+      return 1; // X wins
+    }
+  }
+
+  return null; // No winner
+}
+
+
+
 
 
 }
