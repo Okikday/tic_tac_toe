@@ -131,12 +131,14 @@ class DeviceUtils {
     if (context.mounted) {
       Flushbar(
         message: msg,
+        messageColor: Theme.of(context).colorScheme.primary,
         duration: const Duration(milliseconds: 1500),
-        animationDuration: const Duration(milliseconds: 750),
+        animationDuration: const Duration(milliseconds: 550),
+        forwardAnimationCurve: Curves.fastEaseInToSlowEaseOut,
         flushbarPosition: FlushbarPosition.BOTTOM,
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        borderRadius: BorderRadius.circular(8),
-        backgroundColor: Colors.black.withOpacity(0.8),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 36),
+        borderRadius: BorderRadius.circular(24),
+        backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.9),
         padding: const EdgeInsets.all(16),
       ).show(context);
     }

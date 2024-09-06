@@ -9,6 +9,7 @@ import 'package:tic_tac_toe/utils/device_utils.dart';
 import 'package:tic_tac_toe/views/gameplay/game_widgets/game_result_dialog.dart';
 
 class GameProvider3by3 extends ChangeNotifier {
+  //Offline
   int _count = 0;
   List<int?> _gameplayList = List<int?>.from(SharedPrefsData1.defaultGameplayListGrid3);
   List<String?> _boardTexts = List<String?>.from(SharedPrefsData1.defaultBoardTextsGrid3);
@@ -29,6 +30,7 @@ class GameProvider3by3 extends ChangeNotifier {
   int? get playerTurn => _playerTurn;
   String? get currentGameUserChoice => _currentGameUserChoice;
 
+  //Initialize Game provider on app's start
   Future<void> initGameProvider3by3() async {
     _gameplayList = await SharedPrefsData1.getCurrentGamePlayListGrid3();
     _boardTexts = await SharedPrefsData1.getBoardTextsGrid3();
@@ -173,11 +175,7 @@ class GameProvider3by3 extends ChangeNotifier {
 }
 
 
-
-
-
-
-  //Since X is first
+//Since X is first
   void xPlay(BuildContext context, int pos) async{
 
     _gameplayList[pos] = 1;
@@ -194,6 +192,7 @@ class GameProvider3by3 extends ChangeNotifier {
     }
     
   }
+
 
   void oPlay(BuildContext context, int pos) async{
     _gameplayList[pos] = 0;
@@ -285,9 +284,6 @@ class GameProvider3by3 extends ChangeNotifier {
     await SharedPrefsData1.setPlayerTurn(null);
     await SharedPrefsData1.setCurrentGameUserChoice(null);
     notifyListeners();
-    if(context.mounted){
-      DeviceUtils.showFlushBar(context, "New Game session");
-    }
   }
 
 
@@ -314,6 +310,7 @@ class GameProvider3by3 extends ChangeNotifier {
     }
   }
 
+
   void toggleUserChoice(BuildContext context) async {
     final String newChoice =
         (await SharedPrefsData1.getUserChoice()) == 'X' ? 'O' : 'X';
@@ -335,15 +332,8 @@ class GameProvider3by3 extends ChangeNotifier {
 
   }
 
+
+
 }
-
-
-
-
-
-
-
-
-
 
 

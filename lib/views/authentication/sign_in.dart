@@ -3,11 +3,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
+import 'package:tic_tac_toe/common/widgets/checkmark_anim.dart';
 import 'package:tic_tac_toe/common/widgets/custom_textfield.dart';
 import 'package:tic_tac_toe/data/firebase_data.dart';
 import 'package:tic_tac_toe/services/device_provider.dart';
 import 'package:tic_tac_toe/services/user_auth.dart';
-import 'package:tic_tac_toe/views/gameplay/online_folks.dart';
+import 'package:tic_tac_toe/views/gameplay/online_widgets/online_players.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -146,8 +147,9 @@ class _SignInState extends State<SignIn> {
             Provider.of<DeviceProvider>(context, listen: false).saveUserDetails(outcomeGetUserData['name'], email, outcomeGetUserData['id']);
             setState(()=>isLoadingVisible = false);
             Navigator.pop(context);
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OnlineFolks()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OnlinePlayers()));
             Fluttertoast.showToast(msg: "Successfully Logged in!");
+            if(context.mounted) showDialog(context: context, builder: (context) => const CheckmarkAnim(text: "You successfully logged in", duration: 1500,));
             
         }else{
           Fluttertoast.showToast(msg: outcomeGetUserData);

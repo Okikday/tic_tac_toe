@@ -17,8 +17,8 @@ import 'package:tic_tac_toe/services/device_provider.dart';
 import 'package:tic_tac_toe/services/game_provider_3_by_3.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 import 'package:tic_tac_toe/views/authentication/sign_up.dart';
-import 'package:tic_tac_toe/views/gameplay/online_folks.dart';
-import 'package:tic_tac_toe/views/gameplay/play_online.dart';
+import 'package:tic_tac_toe/views/gameplay/online_widgets/online_players.dart';
+import 'package:tic_tac_toe/views/gameplay/online_widgets/play_online.dart';
 import 'package:tic_tac_toe/views/gameplay/play_with_comp_3_by_3.dart';
 import 'package:tic_tac_toe/views/gameplay/play_with_comp_4_by_4.dart';
 import 'package:tic_tac_toe/views/gameplay/play_with_comp_5_by_5.dart';
@@ -133,7 +133,7 @@ class Home extends StatelessWidget {
                       ),
                       onpressed: () {
                         //if(hasLoggedIn == true){}
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Provider.of<DeviceProvider>(context).isUserLoggedIn == true ? const OnlineFolks() : const SignUp()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Provider.of<DeviceProvider>(context).isUserLoggedIn == true ? const OnlinePlayers() : const SignUp()));
                       },
                     ),
                   ],
@@ -230,10 +230,7 @@ class Home extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 24, right: 24),
                 child: RectangularBox1(
-                  onTap: ()async{
-                    await FirebaseAuth.instance.signOut();
-                    if(context.mounted)Provider.of<DeviceProvider>(context, listen: false).resetUserDetails();
-                    },
+                  onTap: (){},
                   padding: const EdgeInsets.all(16),
                   width: screenWidth,
                   height: 96,

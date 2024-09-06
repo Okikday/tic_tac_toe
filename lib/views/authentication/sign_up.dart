@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
+import 'package:tic_tac_toe/common/widgets/checkmark_anim.dart';
 import 'package:tic_tac_toe/common/widgets/custom_textfield.dart';
 import 'package:tic_tac_toe/services/user_auth.dart';
 import 'package:tic_tac_toe/views/authentication/sign_in.dart';
-import 'package:tic_tac_toe/views/gameplay/online_folks.dart';
+import 'package:tic_tac_toe/views/gameplay/online_widgets/online_players.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -182,12 +183,14 @@ void signInWithGoogleButtonAction(context)async{
     Fluttertoast.showToast(msg: "Successfully signed up");
     canPop = true;
     Navigator.pop(context);
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OnlineFolks()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OnlinePlayers()));
+    if(context.mounted) showDialog(context: context, builder: (context) => const CheckmarkAnim(text: "You successfully logged in with Google", duration: 1500,));
   }else{
     canPop = true;
     Navigator.pop(context);
     Fluttertoast.showToast(msg: outcomeSignInGoogle);
   }
+
 }
 
 }

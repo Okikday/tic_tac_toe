@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/common/widgets/checkmark_anim.dart';
 import 'package:tic_tac_toe/services/device_provider.dart';
 import 'package:tic_tac_toe/services/game_provider_3_by_3.dart';
 import 'package:tic_tac_toe/services/game_provider_4_by_4.dart';
@@ -74,21 +75,21 @@ class _GridTypeSelectDialogState extends State<GridTypeSelectDialog> with Single
                       Provider.of<DeviceProvider>(context, listen: false).changeGridType(toGrid: 3);
                       Provider.of<GameProvider3by3>(context, listen: false).resetGameSession(context);
                       Navigator.pop(context);
-                      Fluttertoast.showToast(msg: "Changed Grid type to 3 by 3");
+                      DeviceUtils.showFlushBar(context, "Changed Grid type to 3 x 3");
                     }),
 
                     CustomButton1(width: screenWidth * 0.7, text: "4 x 4 Grid", onpressed: (){
                       Provider.of<DeviceProvider>(context, listen: false).changeGridType(toGrid: 4);
                       Provider.of<GameProvider4by4>(context, listen: false).resetGameSession(context);
                       Navigator.pop(context);
-                      Fluttertoast.showToast(msg: "Changed Grid type to 4 by 4");
+                      DeviceUtils.showFlushBar(context, "Changed Grid type to 4 x 4");
                     }),
 
                     CustomButton1(width: screenWidth * 0.7, text: "5 x 5 Grid", onpressed: (){
                       Provider.of<DeviceProvider>(context, listen: false).changeGridType(toGrid: 5);
                       Provider.of<GameProvider5by5>(context, listen: false).resetGameSession(context);
                       Navigator.pop(context);
-                      Fluttertoast.showToast(msg: "Changed Grid type to 5 by 5");
+                      DeviceUtils.showFlushBar(context, "Changed Grid type to 4 x 4");
                     }),
               
                   ],
@@ -118,3 +119,4 @@ class CustomButton1 extends StatelessWidget {
     return MaterialButton(onPressed: onpressed ?? (){}, minWidth: width, color: const Color.fromARGB(255, 201, 164, 209), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), height: 48, child: Text(text, style: TextStyle(color: Theme.of(context).colorScheme.primary),),);
   }
 }
+

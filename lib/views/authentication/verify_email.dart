@@ -3,9 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/common/widgets/checkmark_anim.dart';
 import 'package:tic_tac_toe/data/firebase_data.dart';
 import 'package:tic_tac_toe/services/device_provider.dart';
-import 'package:tic_tac_toe/views/gameplay/online_folks.dart';
+import 'package:tic_tac_toe/views/gameplay/online_widgets/online_players.dart';
 
 class VerifyEmail extends StatefulWidget {
   final String name;
@@ -27,7 +28,6 @@ class VerifyEmail extends StatefulWidget {
 
 class _VerifyEmailState extends State<VerifyEmail> {
   late Timer _timer;
-  bool _isVerified = false;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   @override
@@ -56,7 +56,11 @@ class _VerifyEmailState extends State<VerifyEmail> {
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
       // ignore: use_build_context_synchronously
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OnlineFolks()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OnlinePlayers()));
+      if(context.mounted){
+        // ignore: use_build_context_synchronously
+        showDialog(context: context, builder: (context) => const CheckmarkAnim(text: "You successfully logged out", duration: 1500,));
+      }
     }
   } else {
     FirebaseAuth.instance.currentUser!.delete();

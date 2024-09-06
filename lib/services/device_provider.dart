@@ -9,6 +9,7 @@ class DeviceProvider extends ChangeNotifier {
   String _userEmail = '';
   bool _isUserLoggedIn = false;
   bool _hasUserData = false;
+  String _currentOnlineGameplayID = '';
 
   int get gridType => _gridType;
   String get challengeType => _challengeType;
@@ -17,6 +18,7 @@ class DeviceProvider extends ChangeNotifier {
   String get userEmail => _userEmail;
   bool get isUserLoggedIn => _isUserLoggedIn;
   bool get hasUserData => _hasUserData;
+  String get currentOnlineGameplayID => _currentOnlineGameplayID;
 
   Future<void> initDeviceProvider() async{
     _gridType = await SharedPrefsData1.getGridType();
@@ -32,7 +34,6 @@ class DeviceProvider extends ChangeNotifier {
     }else{
       _isUserLoggedIn = false;
     }
-    
   }
   
 
@@ -94,6 +95,14 @@ class DeviceProvider extends ChangeNotifier {
       'userName' : _userName,
       'userLoggedIn' : _isUserLoggedIn,
     });
+  }
+
+  void setCurrentOnlineGameplayID(String gameplayID){
+    _currentOnlineGameplayID = gameplayID;
+  }
+
+  void removeCurrentOnlineGameplayID(){
+    _currentOnlineGameplayID = '';
   }
   
 

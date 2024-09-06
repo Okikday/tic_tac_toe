@@ -75,8 +75,10 @@ class UserAuth {
         return "User not found!";
       } else if (e.code == 'wrong-password') {
         return "Wrong password!";
-      } 
-      return "Error logging in...";
+      }else{
+        return "Error logging in...";
+      }
+      
     }
   }
 

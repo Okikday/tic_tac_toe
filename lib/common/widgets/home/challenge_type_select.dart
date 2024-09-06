@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/services/device_provider.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
@@ -69,17 +68,17 @@ class _ChallengeTypeSelectDialogState extends State<ChallengeTypeSelectDialog> w
                     CustomButton1(width: screenWidth * 0.7, text: "Easy", onpressed: (){
                       Provider.of<DeviceProvider>(context, listen: false).changeChallengeType(changeTo: 'E');
                       Navigator.pop(context);
-                      Fluttertoast.showToast(msg: "Now playing in Easy Mode");
+                      DeviceUtils.showFlushBar(context, "Now playing in Easy Mode");
                     },),
                     CustomButton1(width: screenWidth * 0.7, text: "Medium", onpressed: (){
                       Provider.of<DeviceProvider>(context, listen: false).changeChallengeType(changeTo: 'M');
                       Navigator.pop(context);
-                      Fluttertoast.showToast(msg: "Now playing in Medium Mode");
+                      DeviceUtils.showFlushBar(context, "Now playing in Medium Mode");
                     },),
                     CustomButton1(width: screenWidth * 0.7, text: "Hard", onpressed: (){
                       Provider.of<DeviceProvider>(context, listen: false).changeChallengeType(changeTo: 'H');
                       Navigator.pop(context);
-                      Fluttertoast.showToast(msg: "Now playing in Difficult Mode");
+                      DeviceUtils.showFlushBar(context, "Now playing in Difficult Mode");
                     },),
               
                   ],
