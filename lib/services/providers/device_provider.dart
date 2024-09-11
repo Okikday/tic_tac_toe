@@ -9,8 +9,8 @@ class DeviceProvider extends ChangeNotifier {
   String _userEmail = '';
   bool _isUserLoggedIn = false;
   bool _hasUserData = false;
-  String _currentOnlineGameplayID = '';
-
+  String _photoURL = "";
+  bool _hasCurrentOnlineGameSession = false;
   int get gridType => _gridType;
   String get challengeType => _challengeType;
   String get userId => _userId;
@@ -18,7 +18,8 @@ class DeviceProvider extends ChangeNotifier {
   String get userEmail => _userEmail;
   bool get isUserLoggedIn => _isUserLoggedIn;
   bool get hasUserData => _hasUserData;
-  String get currentOnlineGameplayID => _currentOnlineGameplayID;
+  String get photoURL => _photoURL;
+  bool get hasCurrentOnlineGameSession => _hasCurrentOnlineGameSession;
 
   Future<void> initDeviceProvider() async{
     _gridType = await SharedPrefsData1.getGridType();
@@ -31,9 +32,11 @@ class DeviceProvider extends ChangeNotifier {
       _userId = userDataMap["userId"];
       _userName = userDataMap["userName"];
       _userEmail = userDataMap["email"];
+      _photoURL = userDataMap["photoURL"];
     }else{
       _isUserLoggedIn = false;
     }
+    _hasCurrentOnlineGameSession = false;
   }
   
 
@@ -71,16 +74,18 @@ class DeviceProvider extends ChangeNotifier {
     }
   }
 
-  void saveUserDetails(String name, String email, String id) async{
+  void saveUserDetails(String name, String email, String id, String photo) async{
     _userId = id;
     _userName = name;
     _userEmail = email;
     _isUserLoggedIn = true;
+    _photoURL = photo;
     Data.setUserData({
       'userId' : _userId,
       'email' : _userEmail,
       'userName' : _userName,
       'userLoggedIn' : _isUserLoggedIn,
+      'photoURL': _photoURL
     });
   }
 
@@ -89,20 +94,23 @@ class DeviceProvider extends ChangeNotifier {
     _userName = '';
     _userEmail = '';
     _isUserLoggedIn = false;
+    _photoURL = '';
+    _hasCurrentOnlineGameSession = false;
     Data.setUserData({
       'userId' : _userId,
       'email' : _userEmail,
       'userName' : _userName,
       'userLoggedIn' : _isUserLoggedIn,
+      'photoURL' : _photoURL,
     });
   }
 
-  void setCurrentOnlineGameplayID(String gameplayID){
-    _currentOnlineGameplayID = gameplayID;
+  void setCurrentHasOnlineGameSession(bool hasGameSession){
+    _hasCurrentOnlineGameSession = hasGameSession;
   }
 
-  void removeCurrentOnlineGameplayID(){
-    _currentOnlineGameplayID = '';
+  void endCurrentHasOnlineGameSession(){
+    _hasCurrentOnlineGameSession = false;
   }
   
 

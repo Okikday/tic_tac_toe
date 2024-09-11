@@ -1,16 +1,17 @@
+import 'package:another_flushbar/flushbar_route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/data/shared_prefs_data_1.dart';
 import 'package:tic_tac_toe/models/gameplay.dart';
 import 'package:tic_tac_toe/models/generate_play.dart';
-import 'package:tic_tac_toe/services/device_provider.dart';
+import 'package:tic_tac_toe/services/providers/device_provider.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 import 'package:tic_tac_toe/views/gameplay/game_widgets/game_result_dialog.dart';
 
-class GameProvider5by5 extends ChangeNotifier{
+class GameProvider4by4 extends ChangeNotifier {
   int _count = 0;
-  List<int?> _gameplayList = List<int?>.from(SharedPrefsData1.defaultGameplayListGrid5);
-  List<String?> _boardTexts = List<String?>.from(SharedPrefsData1.defaultBoardTextsGrid5);
+  List<int?> _gameplayList = List<int?>.from(SharedPrefsData1.defaultGameplayListGrid4);
+  List<String?> _boardTexts = List<String?>.from(SharedPrefsData1.defaultBoardTextsGrid4);
   String _userChoice = 'X';
   int _userScore = 0;
   int _compScore = 0;
@@ -18,7 +19,7 @@ class GameProvider5by5 extends ChangeNotifier{
   String? _currentGameUserChoice;
   int? _playerTurn;
 
-   // Getters
+  // Getters
   List<String?> get boardTexts => _boardTexts;
   int get count => _count;
   String get userChoice => _userChoice;
@@ -28,9 +29,9 @@ class GameProvider5by5 extends ChangeNotifier{
   int? get playerTurn => _playerTurn;
   String? get currentGameUserChoice => _currentGameUserChoice;
 
-  Future<void> initGameProvider5by5() async{
-    _gameplayList = await SharedPrefsData1.getCurrentGamePlayListGrid5();
-    _boardTexts = await SharedPrefsData1.getBoardTextsGrid5();
+  Future<void> initGameProvider4by4() async {
+    _gameplayList = await SharedPrefsData1.getCurrentGamePlayListGrid4();
+    _boardTexts = await SharedPrefsData1.getBoardTextsGrid4();
     _userChoice = await SharedPrefsData1.getUserChoice();
     _userScore = await SharedPrefsData1.getUserScore();
     _compScore = await SharedPrefsData1.getCompScore();
@@ -41,10 +42,9 @@ class GameProvider5by5 extends ChangeNotifier{
     }
     _hasCurrentGameSession = _count > 0;
     notifyListeners();
-    debugPrint("Initialized Game Provider 5 x 5");
+    debugPrint("Successfully initialized Game Provider");
     debugPrint("List of gameplay: $_gameplayList");
   }
-
 
   void playGame(BuildContext context, {int? pos}) async {
     String challengeType = Provider.of<DeviceProvider>(context, listen: false).challengeType;
@@ -58,12 +58,12 @@ class GameProvider5by5 extends ChangeNotifier{
         if(context.mounted){
         int compPos = 0;
         if(challengeType == 'E'){
-          compPos = GeneratePlayGridFive().easyMove(_gameplayList);
+          compPos = GeneratePlayGridFour().easyMove(_gameplayList);
         }else if(challengeType == 'M'){
-          compPos = GeneratePlayGridFive().mediumMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1);
+          compPos = GeneratePlayGridFour().mediumMove(_gameplayList,);
         }
         else if(challengeType == 'H'){
-          compPos = GeneratePlayGridFive().hardMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1, _currentGameUserChoice == 'O' ? 0 : 1);
+          compPos = GeneratePlayGridFour().hardMove(_gameplayList,);
         }
         xPlay(context, compPos);
         
@@ -119,12 +119,12 @@ class GameProvider5by5 extends ChangeNotifier{
       if(context.mounted){
         int compPos = 0;
         if(challengeType == 'E'){
-          compPos = GeneratePlayGridFive().easyMove(_gameplayList);
+          compPos = GeneratePlayGridFour().easyMove(_gameplayList);
         }else if(challengeType == 'M'){
-          compPos = GeneratePlayGridFive().mediumMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1);
+          compPos = GeneratePlayGridFour().mediumMove(_gameplayList,);
         }
         else if(challengeType == 'H'){
-          compPos = GeneratePlayGridFive().hardMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1, _currentGameUserChoice == 'O' ? 0 : 1);
+          compPos = GeneratePlayGridFour().hardMove(_gameplayList,);
         }
         xPlay(context, compPos);
         
@@ -136,12 +136,12 @@ class GameProvider5by5 extends ChangeNotifier{
       if(context.mounted){
         int compPos = 0;
         if(challengeType == 'E'){
-          compPos = GeneratePlayGridFive().easyMove(_gameplayList);
+          compPos = GeneratePlayGridFour().easyMove(_gameplayList);
         }else if(challengeType == 'M'){
-          compPos = GeneratePlayGridFive().mediumMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1);
+          compPos = GeneratePlayGridFour().mediumMove(_gameplayList,);
         }
         else if(challengeType == 'H'){
-          compPos = GeneratePlayGridFive().hardMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1, _currentGameUserChoice == 'O' ? 0 : 1);
+          compPos = GeneratePlayGridFour().hardMove(_gameplayList,);
         }
         oPlay(context, compPos);
         
@@ -153,8 +153,8 @@ class GameProvider5by5 extends ChangeNotifier{
   void xPlay(BuildContext context, int pos) async {
     _gameplayList[pos] = 1;
     _boardTexts[pos] = 'X';
-    await SharedPrefsData1.setCurrentGamePlayListGrid5(_gameplayList);
-    await SharedPrefsData1.setBoardTextsGrid5(_boardTexts);
+    await SharedPrefsData1.setCurrentGamePlayListGrid4(_gameplayList);
+    await SharedPrefsData1.setBoardTextsGrid4(_boardTexts);
     await SharedPrefsData1.setPlayerTurn(_playerTurn);
     _count++;
 
@@ -168,8 +168,8 @@ class GameProvider5by5 extends ChangeNotifier{
   void oPlay(BuildContext context, int pos) async {
     _gameplayList[pos] = 0;
     _boardTexts[pos] = 'O';
-    await SharedPrefsData1.setCurrentGamePlayListGrid5(_gameplayList);
-    await SharedPrefsData1.setBoardTextsGrid5(_boardTexts);
+    await SharedPrefsData1.setCurrentGamePlayListGrid4(_gameplayList);
+    await SharedPrefsData1.setBoardTextsGrid4(_boardTexts);
     await SharedPrefsData1.setPlayerTurn(_playerTurn);
     _count++;
 
@@ -181,7 +181,7 @@ class GameProvider5by5 extends ChangeNotifier{
   }
 
   void checkGameplay(BuildContext context) async {
-    final int? winVal = Gameplay().checkWinnerGrid5(_gameplayList, _count);
+    final int? winVal = Gameplay().checkWinnerGrid4(_gameplayList, _count);
 
     debugPrint("The check game play: winVal: $winVal");
 
@@ -192,7 +192,7 @@ class GameProvider5by5 extends ChangeNotifier{
         await SharedPrefsData1.setUserScore(_userScore);
         _playerTurn = null;
         if (context.mounted) {
-          showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(result: "User won",));
+          showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(winner: "user",));
           debugPrint("User won");
         }
       } else {
@@ -200,7 +200,7 @@ class GameProvider5by5 extends ChangeNotifier{
         await SharedPrefsData1.setCompScore(_compScore);
         _playerTurn = null;
         if (context.mounted) {
-          showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(result: "Computer won",));
+          showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(winner: "computer",));
           debugPrint("Computer won");
         }
       }
@@ -213,7 +213,7 @@ class GameProvider5by5 extends ChangeNotifier{
         await SharedPrefsData1.setUserScore(_userScore);
         _playerTurn = null;
         if (context.mounted) {
-          showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(result: "User won",));
+          showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(winner: "user",));
           debugPrint("User won");
         }
       } else if (_currentGameUserChoice == 'O') {
@@ -221,7 +221,7 @@ class GameProvider5by5 extends ChangeNotifier{
         await SharedPrefsData1.setCompScore(_compScore);
         _playerTurn = null;
         if (context.mounted) {
-          showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(result: "Computer won",));
+          showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(winner: "computer",));
           debugPrint("Computer won");
         }
       }
@@ -229,7 +229,7 @@ class GameProvider5by5 extends ChangeNotifier{
 
     if (winVal == null && count == 16) {
       if (context.mounted) {
-        showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(result: "It's a draw",));
+        showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(winner: "draw",));
         debugPrint("It's a Draw");
       }
     }
@@ -240,11 +240,11 @@ class GameProvider5by5 extends ChangeNotifier{
     _count = 0;
     _hasCurrentGameSession = false;
     _playerTurn = null;
-    _gameplayList = List<int?>.from(SharedPrefsData1.defaultGameplayListGrid5);
-    _boardTexts = List<String?>.from(SharedPrefsData1.defaultBoardTextsGrid5);
+    _gameplayList = List<int?>.from(SharedPrefsData1.defaultGameplayListGrid4);
+    _boardTexts = List<String?>.from(SharedPrefsData1.defaultBoardTextsGrid4);
     _currentGameUserChoice = null;
-    await SharedPrefsData1.setCurrentGamePlayListGrid5(_gameplayList);
-    await SharedPrefsData1.setBoardTextsGrid5(_boardTexts);
+    await SharedPrefsData1.setCurrentGamePlayListGrid4(_gameplayList);
+    await SharedPrefsData1.setBoardTextsGrid4(_boardTexts);
     await SharedPrefsData1.setPlayerTurn(_playerTurn);
     await SharedPrefsData1.setCurrentGameUserChoice(_currentGameUserChoice);
     notifyListeners();
@@ -256,15 +256,15 @@ class GameProvider5by5 extends ChangeNotifier{
     _compScore = 0;
     _hasCurrentGameSession = false;
     _playerTurn = null;
-    _gameplayList = List<int?>.from(SharedPrefsData1.defaultGameplayListGrid5);
-    _boardTexts = List<String?>.from(SharedPrefsData1.defaultBoardTextsGrid5);
+    _gameplayList = List<int?>.from(SharedPrefsData1.defaultGameplayListGrid4);
+    _boardTexts = List<String?>.from(SharedPrefsData1.defaultBoardTextsGrid4);
     _currentGameUserChoice = null;
     _userScore = 0;
     _compScore = 0;
     await SharedPrefsData1.setCompScore(_compScore);
     await SharedPrefsData1.setUserScore(_userScore);
-    await SharedPrefsData1.setCurrentGamePlayListGrid5(_gameplayList);
-    await SharedPrefsData1.setBoardTextsGrid5(_boardTexts);
+    await SharedPrefsData1.setCurrentGamePlayListGrid4(_gameplayList);
+    await SharedPrefsData1.setBoardTextsGrid4(_boardTexts);
     await SharedPrefsData1.setPlayerTurn(null);
     await SharedPrefsData1.setCurrentGameUserChoice(null);
     notifyListeners();
@@ -273,14 +273,12 @@ class GameProvider5by5 extends ChangeNotifier{
     }
   }
 
-  void toggleUserChoice(BuildContext context) async {
-    final String newChoice =
-        (await SharedPrefsData1.getUserChoice()) == 'X' ? 'O' : 'X';
+  Future<String?> toggleUserChoice() async {
+    final String newChoice = (await SharedPrefsData1.getUserChoice()) == 'X' ? 'O' : 'X';
     await SharedPrefsData1.setUserChoice(newChoice);
     _userChoice = newChoice;
     notifyListeners();
-    // ignore: use_build_context_synchronously
-    DeviceUtils.showFlushBar(context, "You chose $newChoice");
+    return _userChoice;
   }
 
   void onWin(String win){
@@ -293,5 +291,4 @@ class GameProvider5by5 extends ChangeNotifier{
     }
 
   }
-
 }

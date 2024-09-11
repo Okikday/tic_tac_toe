@@ -4,16 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/colors.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
-import 'package:tic_tac_toe/services/device_provider.dart';
+import 'package:tic_tac_toe/services/providers/device_provider.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
-import 'package:tic_tac_toe/views/gameplay/online_widgets/play_online.dart';
+import 'package:tic_tac_toe/views/gameplay/online_widgets/launch_game_online_play.dart';
 
 class RequestsToPlayOnline extends StatelessWidget {
   const RequestsToPlayOnline({super.key});
 
   @override
   Widget build(BuildContext context) {
-    String gameplayID = Provider.of<DeviceProvider>(context, listen: false).currentOnlineGameplayID;
     final Query query = FirebaseDatabase.instance.ref('gameSessions');
 
     return Scaffold(
@@ -44,8 +43,8 @@ class RequestsToPlayOnline extends StatelessWidget {
 
                 if (userInfo != null) {
                   return PlayerRequestsListTile(
-                    userName: userInfo['userName'],
-                    photoURL: userInfo['photoURL'],
+                    userName: userInfo['userName'] ?? "not-available",
+                    photoURL: userInfo['photoURL'] ?? "not-available",
                     gameplayID: "",
                     status: userInfo['status'],
                   );
@@ -155,13 +154,11 @@ class _PlayerRequestsListTileState extends State<PlayerRequestsListTile> with Si
                 IconButton(
                   onPressed: () async {
                     //On rejection
-                    String gameplayID = Provider.of<DeviceProvider>(context, listen: false).currentOnlineGameplayID;
                     String uid = Provider.of<DeviceProvider>(context, listen: false).userId;
-                    await FirebaseDatabase.instance.ref("gameSessions/$gameplayID").remove();
-                    await FirebaseDatabase.instance.ref("onlinePlayers/$uid/requests/$gameplayID").remove();
+                    // await FirebaseDatabase.instance.ref("gameSessions/$gameplayID").remove();
+                    // await FirebaseDatabase.instance.ref("onlinePlayers/$uid/requests/$gameplayID").remove();
                     if (context.mounted) {
                       DeviceUtils.showFlushBar(context, "You rejected a gameplay with ${widget.userName}");
-                      Provider.of<DeviceProvider>(context, listen: false).removeCurrentOnlineGameplayID();
                     }
                   },
                   icon: const Icon(
@@ -177,13 +174,12 @@ class _PlayerRequestsListTileState extends State<PlayerRequestsListTile> with Si
                     DataSnapshot currentGameplayID = await FirebaseDatabase.instance.ref("onlinePlayers/$uid/requests").get();
                     Map<dynamic, dynamic>? requests = currentGameplayID.value as Map<dynamic, dynamic>?;
                     String gameplayID = requests!.keys.first.toString();
-                    if(context.mounted) Provider.of<DeviceProvider>(context, listen: false).setCurrentOnlineGameplayID(gameplayID);
                     await FirebaseDatabase.instance.ref("gameSessions/$gameplayID").update({
                       'hasOtherUserAccepted': true
                     });
                     if(context.mounted){
                     Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PlayOnline(playAs: 'player2', gameplayID: gameplayID,)));
+                    
                     }
                   },
                   icon: const Icon(

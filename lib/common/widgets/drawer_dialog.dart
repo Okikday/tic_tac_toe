@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/common/widgets/circle_box1.dart';
-import 'package:tic_tac_toe/services/device_provider.dart';
-import 'package:tic_tac_toe/services/game_provider_3_by_3.dart';
-import 'package:tic_tac_toe/services/game_provider_4_by_4.dart';
+import 'package:tic_tac_toe/services/providers/device_provider.dart';
+import 'package:tic_tac_toe/services/providers/game_provider_3_by_3.dart';
+import 'package:tic_tac_toe/services/providers/game_provider_4_by_4.dart';
+import 'package:tic_tac_toe/services/providers/game_provider_5_by_5.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 
 class DrawerDialog extends StatefulWidget {
@@ -24,7 +25,7 @@ class _DrawerDialogState extends State<DrawerDialog> with SingleTickerProviderSt
   void initState() {
     super.initState();
     controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 350));
-    scaleVal = Tween<double>(begin: 0.25, end: 1,).animate(controller);
+    scaleVal = Tween<double>(begin: 1.2, end: 1,).animate(controller);
     controller.forward();
 
     
@@ -65,7 +66,7 @@ class _DrawerDialogState extends State<DrawerDialog> with SingleTickerProviderSt
                 child: Container(
                   color: DeviceUtils.isDarkMode(context) ? Theme.of(context).colorScheme.secondary.withOpacity(0.25) : Theme.of(context).colorScheme.secondary.withOpacity(0.1),
                   child: Container(
-                    padding: EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(24),
                   width: screenWidth * 0.9,
                   height: screenHeight * 0.6,
                   alignment: Alignment.center,
@@ -89,7 +90,7 @@ class _DrawerDialogState extends State<DrawerDialog> with SingleTickerProviderSt
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                        CircleBox1(child: Icon(Icons.home_rounded, size: 28,),),
+                        CircleBox1(child: const Icon(Icons.home_rounded, size: 28,), onpressed: () => Navigator.pop(context),),
                         RectangularBoxIn(
                           onpressed: () => Navigator.pop(context),
                           child: Text("Home", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
@@ -98,38 +99,30 @@ class _DrawerDialogState extends State<DrawerDialog> with SingleTickerProviderSt
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CircleBox1(child: Icon(Icons.cancel_outlined, size: 28,),),
+                          CircleBox1(child: const Icon(Icons.cancel_outlined, size: 28,), onpressed: () => resetElementAction(context),),
                           RectangularBoxIn(
-                            onpressed: (){
-                             if(Provider.of<DeviceProvider>(context, listen: false).gridType == 3){
-                              Provider.of<GameProvider3by3>(context, listen: false).resetGamePlay(context);
-                             }
-                             if(Provider.of<DeviceProvider>(context,  listen: false).gridType == 4){
-                              Provider.of<GameProvider4by4>(context, listen: false).resetGamePlay(context);
-                             }
-                             Navigator.pop(context);
-                            },
+                            onpressed: () => resetElementAction(context),
                             child: Text("Reset", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
                         ],),
 
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                        CircleBox1(child: Icon(Icons.person_rounded, size: 28,),),
+                        const CircleBox1(child: Icon(Icons.person_rounded, size: 28,),),
                         RectangularBoxIn(child: Text("Profile", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
                       ],),
                   
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                        CircleBox1(child: Icon(Icons.settings_rounded, size: 28,),),
+                        const CircleBox1(child: Icon(Icons.settings_rounded, size: 28,),),
                         RectangularBoxIn(child: Text("Settings", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
                       ],),
                   
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                        CircleBox1(child: Icon(Icons.info_rounded, size: 28,),),
+                        const CircleBox1(child: Icon(Icons.info_rounded, size: 28,),),
                         RectangularBoxIn(child: Text("About", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
                       ],),
                     
@@ -143,6 +136,19 @@ class _DrawerDialogState extends State<DrawerDialog> with SingleTickerProviderSt
           ),),
       ),
     );
+  }
+
+  void resetElementAction(BuildContext context) {
+    if(Provider.of<DeviceProvider>(context, listen: false).gridType == 3){
+     Provider.of<GameProvider3by3>(context, listen: false).resetGamePlay(context);
+    }
+    if(Provider.of<DeviceProvider>(context,  listen: false).gridType == 4){
+     Provider.of<GameProvider4by4>(context, listen: false).resetGamePlay(context);
+    }
+    if(Provider.of<DeviceProvider>(context,  listen: false).gridType == 5){
+     Provider.of<GameProvider5by5>(context, listen: false).resetGamePlay(context);
+    }
+    Navigator.pop(context);
   }
 }
 
@@ -165,29 +171,44 @@ class RectangularBoxIn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-        onPressed: (){
-          onpressed == null ? (){} : onpressed!();
-        },
-        padding: const EdgeInsets.all(0),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-        child: Container(
-          padding: padding,
-          width: width,
-          height: height,
-          alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(28),
-                gradient: LinearGradient(
-                  colors: [
-                    const Color.fromARGB(255, 176, 216, 178).withOpacity(0.5), // Lighter green
-                    const Color.fromARGB(255, 201, 164, 209).withOpacity(0.5), // Lighter purple
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-            child: child ?? const SizedBox(),
+      onPressed: () {
+        onpressed == null ? () {} : onpressed!();
+      },
+      padding: const EdgeInsets.all(0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+      child: Container(
+        padding: padding,
+        width: width,
+        height: height,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(28),
+          gradient: LinearGradient(
+            colors: [
+              const Color.fromARGB(255, 55, 75, 56).withOpacity(0.5),
+              const Color.fromARGB(255, 117, 86, 124).withOpacity(0.5), 
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          // Inner border for subtle depth
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1), // Soft dark shadow
+              offset: const Offset(2, 2), // Slight offset for a smooth effect
+              blurRadius: 4, // Light blur
+              spreadRadius: -2, // Inner shadow effect
+            ),
+            BoxShadow(
+              color: const Color.fromARGB(255, 147, 147, 147).withOpacity(0.1), // Light shadow on opposite side
+              offset: const Offset(-2, -2), // Reverse offset for inner light
+              blurRadius: 4,
+              spreadRadius: -2,
+            ),
+          ],
         ),
-      );
+        child: child ?? const SizedBox(),
+      ),
+    );
   }
 }

@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tic_tac_toe/services/device_provider.dart';
+import 'package:tic_tac_toe/services/providers/device_provider.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 
 class ChallengeTypeSelectDialog extends StatefulWidget {
@@ -60,8 +60,9 @@ class _ChallengeTypeSelectDialogState extends State<ChallengeTypeSelectDialog> w
               filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
               child: Container(
                 width: screenWidth * 0.8,
-                height: screenHeight * 0.3,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(32), color: DeviceUtils.isDarkMode(context) ? Theme.of(context).colorScheme.secondary.withOpacity(0.25) : Theme.of(context).colorScheme.secondary.withOpacity(0.75)),
+              height: 300,
+              clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(32), color: DeviceUtils.isDarkMode(context) ? Theme.of(context).colorScheme.secondary.withOpacity(0.75) : Theme.of(context).colorScheme.secondary.withOpacity(0.75)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

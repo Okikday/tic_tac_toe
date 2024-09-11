@@ -8,16 +8,23 @@ class Leaderboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: MyText().medium(context, "Leaderboards"),
+        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
+       
+        centerTitle: true,
+      ),
+
       body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Leaderboards", style: TextStyle(fontSize: Constants.big),),
-              Constants.whiteSpaceVertical(36),
-              
-            ],
-          ),
+        
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Leaderboards", style: TextStyle(fontSize: Constants.big),),
+            Constants.whiteSpaceVertical(36),
+            LeaderboardBox()
+            
+          ],
         ),
       )
     );

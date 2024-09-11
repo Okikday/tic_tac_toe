@@ -40,8 +40,9 @@ class _RectangularBox1State extends State<RectangularBox1> with SingleTickerProv
   }
   @override
   void dispose() {
-    super.dispose();
     controller.dispose();
+    super.dispose();
+    
 
   }
 
@@ -85,8 +86,8 @@ class _RectangularBox1State extends State<RectangularBox1> with SingleTickerProv
                     borderRadius: BorderRadius.circular(28),
                     gradient: LinearGradient(
                       colors: [
-                        const Color.fromARGB(255, 176, 216, 178).withOpacity(0.5), // Lighter green
-                        const Color.fromARGB(255, 201, 164, 209).withOpacity(0.5), // Lighter purple
+                        const Color.fromARGB(255, 131, 177, 134).withOpacity(0.5), // Lighter green
+                        const Color.fromARGB(255, 170, 130, 179).withOpacity(0.5), // Lighter purple
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,

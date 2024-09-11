@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
-import 'package:tic_tac_toe/services/device_provider.dart';
+import 'package:tic_tac_toe/services/providers/device_provider.dart';
 import 'package:tic_tac_toe/services/online_play.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 
@@ -24,7 +24,7 @@ class SendRequestPopUp extends StatefulWidget {
 class _SendRequestPopUpState extends State<SendRequestPopUp> with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation<double> scaleVal;
-
+  bool playAsX = true;
   @override
   void initState() {
     super.initState();
@@ -65,8 +65,8 @@ class _SendRequestPopUpState extends State<SendRequestPopUp> with SingleTickerPr
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
               child: Container(
-                
-                width: screenWidth * 0.9,
+                padding: const EdgeInsets.all(24),
+                width: 300,
                 height: 250,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
@@ -76,43 +76,67 @@ class _SendRequestPopUpState extends State<SendRequestPopUp> with SingleTickerPr
                   borderRadius: BorderRadius.circular(36),
                   gradient: LinearGradient(
                     colors: [
-                      const Color.fromARGB(255, 201, 164, 209).withOpacity(0.25),
-                      const Color.fromARGB(255, 245, 245, 220).withOpacity(0.4),
+                      const Color.fromARGB(255, 144, 202, 249).withOpacity(0.4), // Light Blue
+                      const Color.fromARGB(255, 186, 104, 200).withOpacity(0.4), // Light Lavender
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                 ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 24, right: 24),
+                      padding: const EdgeInsets.only(top: 36),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          const CircleAvatar(
-                            radius: 28,
-                            child: Icon(Icons.person),
+                          Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color.fromARGB(255, 201, 164, 209)
+                                    .withOpacity(0.75),
+                                width: 1.5,
+                              ),
+                              borderRadius: BorderRadius.circular(60)
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(56),
+                              clipBehavior: Clip.hardEdge,
+                              child: CircleAvatar(
+                                radius: 28,
+                                child:  widget.otherPlayerPhotoURL == null || widget.otherPlayerPhotoURL == "not-set" || widget.otherPlayerPhotoURL == "null"
+                                    ? Image.asset(
+                                        "assets/images/no_profile_photo_user.png")
+                                    : Image.network(widget.otherPlayerPhotoURL!),
+                              ),
+                            ),
                           ),
                           const SizedBox(width: 16),
                          SizedBox(width: 150, child:  MyText().small(context, "Do you want to play with ${widget.otherPlayerName}",))
                         ],
                       ),
                     ),
-                    const SizedBox(height: 40),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 24, right: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          MaterialButton(onPressed: (){controller.reverse(); Navigator.pop(context);}, child: MyText().small(context, "Cancel", adjust: -1), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),), color: Colors.red,),
-                          MaterialButton(onPressed: (){
-                            OnlinePlay().requestGamePlay(context, myUID: Provider.of<DeviceProvider>(context, listen: false).userId, otherPlayerUID: widget.otherPlayerID ?? "");
-                            Navigator.pop(context);
-                          }, child: MyText().small(context, "Request Gameplay", adjust: -1), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),), color: Colors.green,)
-                        ],
-                      ),
+                    //Middle play as
+                    Row(children: [
+                      MyText().small(context, "Play as X: "),
+                      Switch(value: playAsX, onChanged: (value){
+                        setState(() {
+                          playAsX = value;
+                        });
+                      })
+                    ],),
+                    
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        MaterialButton(onPressed: (){controller.reverse(); Navigator.pop(context);}, child: MyText().small(context, "Cancel", adjust: -1), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),), color: Colors.red,),
+                        MaterialButton(onPressed: (){
+                          OnlinePlay(context).requestGamePlay(myUID: Provider.of<DeviceProvider>(context, listen: false).userId, otherPlayerUID: widget.otherPlayerID ?? "", choice: playAsX == true ? 'X' : 'O');
+                          Navigator.pop(context);
+                        }, child: MyText().small(context, "Request Gameplay", adjust: -1), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),), color: Colors.green,)
+                      ],
                     ),
                   ],
                 ),

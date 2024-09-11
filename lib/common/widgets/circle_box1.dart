@@ -23,15 +23,7 @@ class CircleBox1 extends StatelessWidget {
         padding: EdgeInsets.all(4),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          gradient: LinearGradient(
-                colors: [
-                  const Color.fromARGB(255, 176, 216, 178).withOpacity(0.5), // Lighter green
-                  const Color.fromARGB(255, 201, 164, 209).withOpacity(0.5), // Lighter purple
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                stops: [0.0, 0.3],
-              ),
+          color: const Color.fromARGB(255, 55, 75, 56).withOpacity(0.5), // Lighter green
         ),
         child: child,
       ),

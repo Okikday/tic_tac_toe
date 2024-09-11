@@ -8,14 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/data/firebase_data.dart';
-import 'package:tic_tac_toe/services/device_provider.dart';
+import 'package:tic_tac_toe/services/providers/device_provider.dart';
 import 'package:tic_tac_toe/views/authentication/verify_email.dart';
 
 class UserAuth {
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final CollectionReference _collectionReference = FirebaseFirestore.instance.collection('users');
-  GoogleSignIn _googleAuth = GoogleSignIn();
+  final GoogleSignIn _googleAuth = GoogleSignIn();
   String? message;
   final FirebaseData _firebaseData = FirebaseData();
   UserCredential? _userCredential;
@@ -110,7 +110,7 @@ class UserAuth {
 
     String? outcomeCreateUser = await _firebaseData.createUserData(uid, name, "", email, "Google", photoURL: photoURL);
     if(outcomeCreateUser == null){
-      if(context.mounted) Provider.of<DeviceProvider>(context, listen: false).saveUserDetails(name, email, uid);
+      if(context.mounted) Provider.of<DeviceProvider>(context, listen: false).saveUserDetails(name, email, uid, photoURL);
 
       return null;
     }else{

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tic_tac_toe/services/game_provider_4_by_4.dart';
+import 'package:tic_tac_toe/services/providers/game_provider_4_by_4.dart';
 import 'package:tic_tac_toe/views/gameplay/game_widgets/grid_board_4_by_4.dart';
 import 'package:tic_tac_toe/views/gameplay/game_widgets/progress_trackboard.dart';
 import 'package:tic_tac_toe/views/gameplay/game_widgets/scoreboard.dart';
@@ -37,7 +37,7 @@ class _PlayWithComp4By4State extends State<PlayWithComp4By4> {
         children: [
            Consumer<GameProvider4by4>(
             builder: (context, provider, child){
-            return Scoreboard(score1: context.watch<GameProvider4by4>().userScore, score2: context.watch<GameProvider4by4>().compScore,);
+            return Scoreboard(score1: context.watch<GameProvider4by4>().userScore, score2: context.watch<GameProvider4by4>().compScore, playingWith: "Computer",);
           }),
            Consumer<GameProvider4by4>(
             builder: (context, provider, child){

@@ -143,4 +143,8 @@ class DeviceUtils {
       ).show(context);
     }
   }
+
+  static void pushMaterialPage(BuildContext context, Widget page){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+  }
 }

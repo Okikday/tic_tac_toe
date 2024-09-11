@@ -47,7 +47,9 @@ class _OptionBoxState extends State<OptionBox> with SingleTickerProviderStateMix
       child: GestureDetector(
         onTapDown: (details){
           controller.forward(from: 0);
-          Future.delayed(Duration(milliseconds: 200), (){
+        },
+        onTap: () {
+          Future.delayed(const Duration(milliseconds: 190), (){
             widget.onpressed != null ? widget.onpressed!() : (){};
           });
         },
@@ -71,8 +73,8 @@ class _OptionBoxState extends State<OptionBox> with SingleTickerProviderStateMix
             borderRadius: BorderRadius.circular(28),
             gradient: LinearGradient(
               colors: [
-                const Color.fromARGB(255, 176, 216, 178).withOpacity(0.5), // Lighter green
-                const Color.fromARGB(255, 201, 164, 209).withOpacity(0.5), // Lighter purple
+                const Color.fromARGB(255, 131, 177, 134).withOpacity(0.5), // Lighter green
+                        const Color.fromARGB(255, 170, 130, 179).withOpacity(0.5), // Lighter purple
                 const Color.fromARGB(255, 245, 245, 220).withOpacity(0.5), // Cream
               ],
               begin: Alignment.topLeft,

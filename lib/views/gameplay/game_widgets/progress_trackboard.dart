@@ -5,39 +5,60 @@ import 'package:tic_tac_toe/utils/device_utils.dart';
 
 class ProgressTrackboard extends StatefulWidget {
   final String textValue;
-  const ProgressTrackboard({super.key, this.textValue = "Well"});
+  const ProgressTrackboard({super.key, this.textValue = "Progress Trackboard"});
 
   @override
   State<ProgressTrackboard> createState() => _ProgressTrackboardState();
 }
 
-class _ProgressTrackboardState extends State<ProgressTrackboard> with SingleTickerProviderStateMixin{
+class _ProgressTrackboardState extends State<ProgressTrackboard>
+    with SingleTickerProviderStateMixin {
   late AnimationController controller;
-  late Animation<double> fadeVal;
+  late Animation<double> val;
+
   @override
   void initState() {
-    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
-    fadeVal = Tween<double>(begin: 0, end: 1).animate(controller);
-    controller.forward();
     super.initState();
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+    val = Tween<double>(begin: 1.05, end: 1).animate(controller);
+    
+    // Start initial animation
+    Future.delayed(const Duration(milliseconds: 250), () => controller.forward());
   }
+
+  @override
+  void didUpdateWidget(covariant ProgressTrackboard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // Check if textValue has changed
+    if (widget.textValue != oldWidget.textValue) {
+      controller.reverse().then((_) {
+        // Update the text after reverse animation completes and play forward animation
+        setState(() {});
+        controller.forward();
+      });
+    }
+  }
+
   @override
   void dispose() {
     controller.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: fadeVal,
+    return ScaleTransition(
+      scale: val,
       child: Container(
         width: 300,
         height: 48,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: DeviceUtils.isDarkMode(context) ? const Color.fromARGB(255, 201, 164, 209).withOpacity(0.5) : MyColors.dark.withOpacity(0.75),
-          borderRadius: BorderRadius.circular(48)
-
+          color: DeviceUtils.isDarkMode(context)
+              ? const Color.fromARGB(255, 201, 164, 209).withOpacity(0.5)
+              : MyColors.dark.withOpacity(0.75),
+          borderRadius: BorderRadius.circular(48),
         ),
         child: MyText().medium(context, widget.textValue, invertColor: true),
       ),

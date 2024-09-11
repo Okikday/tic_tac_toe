@@ -15,9 +15,8 @@ class DrawerIcon extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
         colors: [
-            const Color.fromARGB(255, 176, 216, 178).withOpacity(0.5), // Lighter green
-            const Color.fromARGB(255, 201, 164, 209).withOpacity(0.5), // Lighter purple
-            const Color.fromARGB(255, 245, 245, 220).withOpacity(0.5), // Cream
+            const Color.fromARGB(255, 55, 75, 56).withOpacity(0.5),
+              const Color.fromARGB(255, 117, 86, 124).withOpacity(0.5), 
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,), shape: BoxShape.circle, ),

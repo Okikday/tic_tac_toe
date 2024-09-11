@@ -1,9 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:tic_tac_toe/data/data.dart';
-import 'package:tic_tac_toe/services/device_provider.dart';
 
 class FirebaseData {
   final CollectionReference _collectionReference = FirebaseFirestore.instance.collection('users');
@@ -35,6 +30,7 @@ class FirebaseData {
       if (userDocSnapshot.exists) {
         // Extract the user data from the document snapshot
         Map<String, dynamic>? userData = userDocSnapshot.data() as Map<String, dynamic>?;
+
 
         if (userData == null || userData.isEmpty) {
           return "Unable to fetch user data";

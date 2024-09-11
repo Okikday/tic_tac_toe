@@ -4,24 +4,27 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/services/providers/device_provider.dart';
-import 'package:tic_tac_toe/services/providers/game_provider_3_by_3.dart';
-import 'package:tic_tac_toe/services/providers/game_provider_4_by_4.dart';
-import 'package:tic_tac_toe/services/providers/game_provider_5_by_5.dart';
+import 'package:tic_tac_toe/services/providers/online_provider.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 
-class GameResultDialog extends StatefulWidget {
-  final String winner;
+class OnlineGameResultDialog extends StatefulWidget {
+  final String message;
+  final String otherPlayerPhotoURL;
+  final String otherPlayerName;
 
-  const GameResultDialog({
+
+  const OnlineGameResultDialog({
     super.key,
-    required this.winner,
+    required this.message,
+    required this.otherPlayerName,
+    required this.otherPlayerPhotoURL
   });
 
   @override
-  State<GameResultDialog> createState() => _GameResultDialogState();
+  State<OnlineGameResultDialog> createState() => _OnlineGameResultDialogState();
 }
 
-class _GameResultDialogState extends State<GameResultDialog>
+class _OnlineGameResultDialogState extends State<OnlineGameResultDialog>
     with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation<double> scaleVal;
@@ -30,14 +33,6 @@ class _GameResultDialogState extends State<GameResultDialog>
   @override
   void initState() {
     super.initState();
-    
-    if(widget.winner == "user"){
-      result = "You won!";
-    }else if(widget.winner == "computer"){
-      result = "Computer won";
-    }else if(widget.winner == "draw"){
-      result = "It's a draw";
-    }
     controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 350));
     scaleVal = Tween<double>(
@@ -53,24 +48,8 @@ class _GameResultDialogState extends State<GameResultDialog>
     super.dispose();
   }
 
-  Widget image(String photoURL){
-    if(widget.winner == "user"){
-      if(photoURL.isEmpty || photoURL == "not-set"){
-       return Image.asset("assets/images/no_profile_photo_user_2.png");
-      }else{
-        return Image.network(photoURL);
-      }
-    }else if(widget.winner == "computer"){
-      return Image.asset("assets/images/robot.png");
-    }else{
-      return Image.asset("assets/images/no_profile_photo_user_2.png");
-    }
-    
-  }
-
   @override
   Widget build(BuildContext context) {
-    final String photoURL = Provider.of<DeviceProvider>(context, listen: false).photoURL;
     final double screenWidth = DeviceUtils.getScreenWidth(context);
     return PopScope(
       canPop: false,
@@ -79,7 +58,7 @@ class _GameResultDialogState extends State<GameResultDialog>
         child: Dialog(
           child: Container(
             width: screenWidth * 0.9,
-            height: 250,
+            height: 300,
             padding: EdgeInsets.zero,
             decoration: BoxDecoration(
               
@@ -100,10 +79,8 @@ class _GameResultDialogState extends State<GameResultDialog>
                   offset: const Offset(4, 4), // Positioned to give a light 3D feel
                   blurRadius: 10, // Slightly blurred for soft shadow
                 ),
-                
               ],
             ),
-
             child: Stack(
               clipBehavior: Clip.hardEdge,
               children: [
@@ -117,52 +94,57 @@ class _GameResultDialogState extends State<GameResultDialog>
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: DeviceUtils.isDarkMode(context)
-                          ? Theme.of(context)
-                              .scaffoldBackgroundColor
-                              .withOpacity(0.75)
-                          : Theme.of(context)
-                              .scaffoldBackgroundColor
-                              .withOpacity(0.75),
+                          ? Theme.of(context).scaffoldBackgroundColor.withOpacity(0.75)
+                          : Theme.of(context).scaffoldBackgroundColor.withOpacity(0.75),
                       borderRadius: BorderRadius.circular(36),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 36),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ProfilePhotoAvatar(image: image(photoURL)),
-                              const SizedBox(width: 16),
-                              MyText().big(
-                                context,
-                                result,
-                              )
-                            ],
-                          ),
+                        Row(
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Row(
+                                  children: [
+                                    ProfilePhotoAvatar(photoURL: Provider.of<DeviceProvider>(context, listen: false).photoURL),
+                                    Constants.whiteSpaceHorizontal(12),
+                                    MyText().big(context, Provider.of<OnlineProvider>(context).score1.toString(), adjust: 8),
+                                  ],
+                                ),
+                                Constants.whiteSpaceVertical(8),
+                                MyText().small(context, "You", adjust: 4),
+                              ],
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 18),
+                                child: MyText().small(context, "vs", align: TextAlign.center, adjust: 4),
+                              ),
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Row(
+                                  children: [
+                                    MyText().big(context, Provider.of<OnlineProvider>(context).score2.toString().toString(), adjust: 8),
+                                    Constants.whiteSpaceHorizontal(24),
+                                    ProfilePhotoAvatar(photoURL: widget.otherPlayerPhotoURL)
+                                  ],
+                                ),
+                                Constants.whiteSpaceVertical(8),
+                                MyText().small(context, widget.otherPlayerName, adjust: 4),
+                              ],
+                            ),
+                          ],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                final int gridType = Provider.of<DeviceProvider>(context,listen: false).gridType;
-                                if (gridType == 3) {
-                                  Provider.of<GameProvider3by3>(context, listen: false).resetGamePlay(context);
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                }
-                                if (gridType == 4) {
-                                  Provider.of<GameProvider4by4>(context, listen: false).resetGamePlay(context);
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                }
-                                if (gridType == 5) {
-                                  Provider.of<GameProvider5by5>(context, listen: false).resetGamePlay(context);
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                }
+                                
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.redAccent,
@@ -175,44 +157,12 @@ class _GameResultDialogState extends State<GameResultDialog>
                               ),
                               child: MyText().small(
                                 context,
-                                "Reset game",
+                                "End game",
                               ),
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                final int gridType = Provider.of<DeviceProvider>(context,listen: false).gridType;
-                                if (gridType == 3) {
-                                  Provider.of<GameProvider3by3>(context,listen: false).resetGameSession(context);
-                                  controller.reverse();
-                                  Future.delayed(const Duration(milliseconds: 360,), () {
-                                    if(context.mounted){
-                                      Navigator.pop(context);
-                                      Provider.of<GameProvider3by3>(context,listen: false).playGame(context);
-                                    }
-                                  });
-                                   
-                                }
-                                if (gridType == 4) {
-                                  Provider.of<GameProvider4by4>(context,listen: false).resetGameSession(context);
-                                  controller.reverse();
-                                  Future.delayed(const Duration(milliseconds: 360,), () {
-                                    if(context.mounted){
-                                      Navigator.pop(context);
-                                      Provider.of<GameProvider4by4>(context,listen: false).playGame(context);
-                                    }
-                                  });
-                                }
-                                if (gridType == 5) {
-                                  Provider.of<GameProvider5by5>(context,listen: false).resetGameSession(context);
-                                  controller.reverse();
-                                  Future.delayed(const Duration(milliseconds: 360,), () {
-                                    if(context.mounted){
-                                      Navigator.pop(context);
-                                      Provider.of<GameProvider5by5>(context,listen: false).playGame(context);
-                                    }
-                                  });
-                                }
-                                
+                               
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
@@ -246,8 +196,16 @@ class _GameResultDialogState extends State<GameResultDialog>
 
 
 class ProfilePhotoAvatar extends StatelessWidget {
-  final Widget? image;
-  const ProfilePhotoAvatar({super.key, required this.image});
+  final String photoURL;
+  const ProfilePhotoAvatar({super.key, required this.photoURL});
+
+  Widget image(){
+    if(photoURL != "null" && photoURL != "not-set" && photoURL.isNotEmpty){
+      return Image.network(photoURL);
+    }else{
+      return Image.asset("assets/images/no_profile_photo_user.png");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +223,7 @@ class ProfilePhotoAvatar extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         child: CircleAvatar(
           radius: 28,
-          child: image ?? const SizedBox(),
+          child: image(),
         ),
       ),
     );

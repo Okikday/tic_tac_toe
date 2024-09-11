@@ -1,8 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/common/widgets/circle_box1.dart';
@@ -13,24 +10,43 @@ import 'package:tic_tac_toe/common/widgets/home/grid_type_select_dialog.dart';
 import 'package:tic_tac_toe/common/widgets/option_box.dart';
 import 'package:tic_tac_toe/common/widgets/rectangular_box1.dart';
 import 'package:tic_tac_toe/common/widgets/tic_tac_toe_text.dart';
-import 'package:tic_tac_toe/services/device_provider.dart';
-import 'package:tic_tac_toe/services/game_provider_3_by_3.dart';
+import 'package:tic_tac_toe/services/providers/device_provider.dart';
+import 'package:tic_tac_toe/services/providers/game_provider_3_by_3.dart';
+import 'package:tic_tac_toe/services/providers/game_provider_4_by_4.dart';
+import 'package:tic_tac_toe/services/providers/game_provider_5_by_5.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 import 'package:tic_tac_toe/views/authentication/sign_up.dart';
+import 'package:tic_tac_toe/views/gameplay/game_widgets/play_with_comp_4_by_4.dart';
+import 'package:tic_tac_toe/views/gameplay/game_widgets/play_with_comp_5_by_5.dart';
 import 'package:tic_tac_toe/views/gameplay/online_widgets/online_players.dart';
-import 'package:tic_tac_toe/views/gameplay/online_widgets/play_online.dart';
-import 'package:tic_tac_toe/views/gameplay/play_with_comp_3_by_3.dart';
-import 'package:tic_tac_toe/views/gameplay/play_with_comp_4_by_4.dart';
-import 'package:tic_tac_toe/views/gameplay/play_with_comp_5_by_5.dart';
+import 'package:tic_tac_toe/views/gameplay/game_widgets/play_with_comp_3_by_3.dart';
+import 'package:tic_tac_toe/views/screens/leaderboard.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  int gridType = 3;
+  String? playingAs = '';
+  void checkChoice()async{
+    if(gridType == 3){
+      setState(() => playingAs = Provider.of<GameProvider3by3>(context, listen: false).userChoice);
+    }else if(gridType == 4){
+      setState(() => playingAs = Provider.of<GameProvider3by3>(context, listen: false).userChoice);
+    }else if(gridType == 5){
+      setState(() => playingAs = Provider.of<GameProvider3by3>(context, listen: false).userChoice);
+    }
+  }
+  @override
   Widget build(BuildContext context) {
+    gridType = Provider.of<DeviceProvider>(context, listen: false).gridType;
     final double screenWidth = DeviceUtils.getScreenWidth(context);
     final double screenHeight = DeviceUtils.getScreenHeight(context);
-
+    checkChoice();
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -40,7 +56,7 @@ class Home extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Constants.whiteSpaceVertical(48),
+              Constants.whiteSpaceVertical(DeviceUtils.getAppBarHeight()),
 
               Padding(
                 padding: const EdgeInsets.only(left: 24, right: 24),
@@ -68,21 +84,12 @@ class Home extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     RectangularBox1(
-                        onTap: () {
-                          Fluttertoast.showToast(
-                              msg: "Just damn choose what you playing as:}");
-                        },
-                        child: MyText().big(context, "Playing as")),
-                    Consumer<GameProvider3by3>(
-                      builder: (context, value, child) {
-                        return CircleBox1(
-                          onpressed: (){
-                            value.toggleUserChoice(context);
-                          },
-                          child: MyText().big(context, value.userChoice),
-                        );
-                      },
-                    )
+                        onTap: toggleChoiceAction,
+                        child: MyText().big(context, "Playing as ->")),
+                    CircleBox1(
+                          onpressed: toggleChoiceAction,
+                          child: MyText().big(context, playingAs, color: playingAs == 'X' ? const Color.fromARGB(255, 156, 46, 46) : Colors.white)
+                        )
                   ],
                 ),
               ),
@@ -100,7 +107,7 @@ class Home extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
-                    OptionBox(
+                    OptionBox(//
                       child: Text(
                         "Play with your Computer",
                         textAlign: TextAlign.center,
@@ -110,15 +117,15 @@ class Home extends StatelessWidget {
                         ),
                       ),
                       onpressed: () {
-                        final int check = Provider.of<DeviceProvider>(context, listen: false).gridType;
-                        if(check == 3){
+                        final int checkGridType = Provider.of<DeviceProvider>(context, listen: false).gridType;
+                        if(checkGridType == 3){
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp3By3()));
-                        }else if(check == 4){
+                        }else if(checkGridType == 4){
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp4By4()));
-                        }else if(check == 5){
+                        }else if(checkGridType == 5){
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp5By5()));
                         }else{
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp3By3()));
+                          DeviceUtils.showFlushBar(context, "Try choosing a Grid type");
                         }
                       },
                     ),
@@ -133,7 +140,7 @@ class Home extends StatelessWidget {
                       ),
                       onpressed: () {
                         //if(hasLoggedIn == true){}
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Provider.of<DeviceProvider>(context).isUserLoggedIn == true ? const OnlinePlayers() : const SignUp()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Provider.of<DeviceProvider>(context, listen: false).isUserLoggedIn == true ? const OnlinePlayers() : const SignUp()));
                       },
                     ),
                   ],
@@ -149,76 +156,28 @@ class Home extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    //Grid type
-                    RectangularBox1(
-                      height: 64,
-                      width: screenWidth,
-                      padding: const EdgeInsets.all(12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const Icon(Icons.grid_3x3_rounded),
-                          Expanded(
-                              child: Text(
-                            "Play with a friend right here",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontSize: Constants.medium),
-                          ))
-                        ],
-                      ),
+                    CustomRectangularBox1(
+                      screenWidth: screenWidth,
+                      ontap: (){},
+                      isDialog: true,
+                      svgPath: "assets/images/friends.svg",
+                      title: "Play with a friend",
                     ),
                     Constants.whiteSpaceVertical(24),
-                    RectangularBox1(
-                      height: 64,
-                      width: screenWidth,
-                      padding: const EdgeInsets.all(12),
-                      onTap: () async{
-                        showDialog(
-                            context: context,
-                            builder: (context) => const GridTypeSelectDialog());
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const Icon(Icons.grid_3x3_rounded),
-                          Expanded(
-                              child: Text(
-                            "Grid type",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontSize: Constants.medium),
-                          ))
-                        ],
-                      ),
+                    CustomRectangularBox1(
+                      screenWidth: screenWidth,
+                      isDialog: true,
+                      dialog: const GridTypeSelectDialog(),
+                      svgPath: "assets/images/tic-tac-toe.svg",
+                      title: "Grid type",
                     ),
                     Constants.whiteSpaceVertical(24),
-                    RectangularBox1(
-                      height: 64,
-                      width: screenWidth,
-                      padding: const EdgeInsets.all(12),
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) => const ChallengeTypeSelectDialog()
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const Icon(Icons.grid_3x3_rounded),
-                          Expanded(
-                              child: Text(
-                            "Challenge Type",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontSize: Constants.medium),
-                          ))
-                        ],
-                      ),
+                    CustomRectangularBox1(
+                      screenWidth: screenWidth,
+                      isDialog: true,
+                      dialog: const ChallengeTypeSelectDialog(),
+                      svgPath: "assets/images/Challenge_Icon.svg",
+                      title: "Challenge type",
                     ),
                   ],
                 ),
@@ -229,46 +188,108 @@ class Home extends StatelessWidget {
               //Leaderboard
               Padding(
                 padding: const EdgeInsets.only(left: 24, right: 24),
-                child: RectangularBox1(
-                  onTap: (){},
-                  padding: const EdgeInsets.all(16),
-                  width: screenWidth,
-                  height: 96,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 64,
-                        height: 64,
-                        child: SvgPicture.asset(
-                          "assets/images/leaderboard-svgrepo.svg",
-                          width: 64,
-                          height: 64,
-                          colorFilter: ColorFilter.mode(
-                              Theme.of(context).colorScheme.primary,
-                              BlendMode.srcIn),
-                        ),
-                      ),
-                      Expanded(
-                          child: Text(
-                        "Leaderboards",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontSize: Constants.extraMedium),
-                      )),
-                    ],
-                  ),
+                child: Hero(
+                  tag: "leaderboard",
+                  child: CustomRectangularBox1(
+                      height: screenHeight * 0.1,
+                      screenWidth: screenWidth,
+                      isDialog: false,
+                      page: const Hero(tag: "leaderboard", child: Leaderboard()),
+                      svgPath: "assets/images/leaderboard-svgrepo.svg",
+                      title: "Leaderboards",
+                    ),
                 ),
               ),
+              Constants.whiteSpaceVertical(36)
             ],
           ),
         ),
       ),
     );
   }
+
+  void toggleChoiceAction() async {
+    
+    
+    if (gridType == 3) {
+      playingAs = await Provider.of<GameProvider3by3>(context, listen: false).toggleUserChoice();
+      setState(() => gridType);
+    } else if (gridType == 4) {
+      playingAs = await Provider.of<GameProvider4by4>(context, listen: false).toggleUserChoice();
+      setState(() => gridType);
+    } else if (gridType == 5) {
+      playingAs = await Provider.of<GameProvider5by5>(context, listen: false).toggleUserChoice();
+      setState(() => gridType);
+    }
+    checkChoice();
+    // ignore: use_build_context_synchronously
+    if(context.mounted){DeviceUtils.showFlushBar(context, "You chose $playingAs");}
+  }
 }
 
-//Grid type
-//Challenge type
-//5 Games
+
+class CustomRectangularBox1 extends StatelessWidget {
+  
+  const CustomRectangularBox1({
+    super.key,
+    required this.screenWidth,
+    required this.isDialog,
+    this.height = 64,
+    this.ontap,
+    this.dialog,
+    this.page,
+    this.title = "title",
+    this.svgPath = "assets/images/tic-tac-toe.svg",
+  });
+
+  final double screenWidth;
+  final bool isDialog;
+  final double height;
+  final void Function()? ontap;
+  final Widget? dialog;
+  final Widget? page;
+  final String svgPath;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return RectangularBox1(
+      height: height,
+      width: screenWidth,
+      padding: const EdgeInsets.all(12),
+      onTap: (){
+       if(ontap == null){
+         isDialog == true ? showDialog(
+            context: context,
+            builder: (context) => dialog ?? const AlertDialog()
+        ) : Navigator.push(context, MaterialPageRoute(builder: (context) => page ?? const SizedBox()));
+       }else{
+        ontap;
+       }
+
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 36,
+            height: 36,
+             child: SvgPicture.asset(
+              svgPath,
+              colorFilter: ColorFilter.mode(
+                  Theme.of(context).colorScheme.primary,
+                  BlendMode.srcIn),
+                  ), ),
+          Expanded(
+              child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontSize: Constants.medium),
+          ))
+        ],
+      ),
+    );
+  }
+}

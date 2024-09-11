@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/widgets/checkmark_anim.dart';
 import 'package:tic_tac_toe/data/firebase_data.dart';
-import 'package:tic_tac_toe/services/device_provider.dart';
+import 'package:tic_tac_toe/services/providers/device_provider.dart';
 import 'package:tic_tac_toe/views/gameplay/online_widgets/online_players.dart';
 
 class VerifyEmail extends StatefulWidget {
@@ -23,7 +23,7 @@ class VerifyEmail extends StatefulWidget {
   });
 
   @override
-  _VerifyEmailState createState() => _VerifyEmailState();
+  State<VerifyEmail> createState() => _VerifyEmailState();
 }
 
 class _VerifyEmailState extends State<VerifyEmail> {
@@ -52,7 +52,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
   if (outcomeCreateUserData == null) {
     if (context.mounted) {
       // ignore: use_build_context_synchronously
-      Provider.of<DeviceProvider>(context, listen: false).saveUserDetails(widget.name, widget.email, widget.uid);
+      Provider.of<DeviceProvider>(context, listen: false).saveUserDetails(widget.name, widget.email, widget.uid, "not-set");
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
       // ignore: use_build_context_synchronously
@@ -77,31 +77,34 @@ class _VerifyEmailState extends State<VerifyEmail> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Verify Email"),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "A verification email has been sent to your email address. Please verify your email to continue.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            const CircularProgressIndicator(),
-            const SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                _firebaseAuth.currentUser!.sendEmailVerification();
-                Fluttertoast.showToast(msg: "Verification email resent.");
-              },
-              child: const Text("Resend Verification Email"),
-            ),
-          ],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Verify Email"),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "A verification email has been sent to your email address. Please verify your email to continue.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 20),
+              const CircularProgressIndicator(),
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () {
+                  _firebaseAuth.currentUser!.sendEmailVerification();
+                  Fluttertoast.showToast(msg: "Verification email resent.");
+                },
+                child: const Text("Resend Verification Email"),
+              ),
+            ],
+          ),
         ),
       ),
     );

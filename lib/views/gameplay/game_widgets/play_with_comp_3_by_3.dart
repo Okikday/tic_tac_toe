@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tic_tac_toe/services/game_provider_3_by_3.dart';
+import 'package:tic_tac_toe/services/providers/game_provider_3_by_3.dart';
 import 'package:tic_tac_toe/views/gameplay/game_widgets/grid_board_3_by_3.dart';
 import 'package:tic_tac_toe/views/gameplay/game_widgets/progress_trackboard.dart';
 import 'package:tic_tac_toe/views/gameplay/game_widgets/scoreboard.dart';

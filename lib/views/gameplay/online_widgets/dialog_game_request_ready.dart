@@ -1,15 +1,18 @@
 import 'dart:ui';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
-import 'package:tic_tac_toe/services/device_provider.dart';
+import 'package:tic_tac_toe/services/online_play.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
-import 'package:tic_tac_toe/views/gameplay/online_widgets/play_online.dart';
 
 class DialogGameRequestReady extends StatefulWidget {
+  final String? otherPlayerName;
+  final String? otherPlayerPhotoURL;
+  final String gameIDToJoin;
   const DialogGameRequestReady({
     super.key,
+    required this.otherPlayerName,
+    required this.otherPlayerPhotoURL,
+    required this.gameIDToJoin,
   });
 
   @override
@@ -32,7 +35,6 @@ class _DialogGameRequestReadyState extends State<DialogGameRequestReady> with Si
       controller.forward();
     });
   }
-  
 
   @override
   void dispose() {
@@ -44,8 +46,9 @@ class _DialogGameRequestReadyState extends State<DialogGameRequestReady> with Si
   Widget build(BuildContext context) {
     final double screenWidth = DeviceUtils.getScreenWidth(context);
     return PopScope(
-      onPopInvokedWithResult:(didPop, result){
-
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        DeviceUtils.showFlushBar(context, "Lol, who you wan finish with error handling. Oga fess enter game abeg");
       },
       child: ScaleTransition(
         scale: scaleVal,
@@ -64,23 +67,15 @@ class _DialogGameRequestReadyState extends State<DialogGameRequestReady> with Si
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
                 child: Container(
-                  
                   width: screenWidth * 0.9,
                   height: 250,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: DeviceUtils.isDarkMode(context)
-                      ? Theme.of(context).colorScheme.secondary.withOpacity(0.25)
-                      : Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                        ? Theme.of(context).colorScheme.secondary.withOpacity(0.25)
+                        : Theme.of(context).colorScheme.secondary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(36),
-                    gradient: LinearGradient(
-                      colors: [
-                        const Color.fromARGB(255, 201, 164, 209).withOpacity(0.25),
-                        const Color.fromARGB(255, 245, 245, 220).withOpacity(0.4),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
+                    
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -90,32 +85,58 @@ class _DialogGameRequestReadyState extends State<DialogGameRequestReady> with Si
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            const CircleAvatar(
-                              radius: 28,
-                              child: Icon(Icons.person),
+                            Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: const Color.fromARGB(255, 201, 164, 209).withOpacity(0.75),
+                                    width: 1.5,
+                                  ),
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      const Color.fromARGB(255, 144, 202, 249).withOpacity(0.4), // Light Blue
+                                      const Color.fromARGB(255, 186, 104, 200).withOpacity(0.4), // Light Lavender
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(60)),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(56),
+                                clipBehavior: Clip.hardEdge,
+                                child: CircleAvatar(
+                                  radius: 28,
+                                  child: widget.otherPlayerPhotoURL == null || widget.otherPlayerPhotoURL == "not-set" || widget.otherPlayerPhotoURL == "null"
+                                      ? Image.asset("assets/images/no_profile_photo_user.png")
+                                      : Image.network(widget.otherPlayerPhotoURL!),
+                                ),
+                              ),
                             ),
                             const SizedBox(width: 16),
-                           SizedBox(width: 150, child:  MyText().small(context, "___ is ready to play",))
+                            SizedBox(
+                                width: 150,
+                                child: MyText().small(
+                                  context,
+                                  "${widget.otherPlayerName} is ready to play",
+                                ))
                           ],
                         ),
                       ),
                       const SizedBox(height: 40),
                       Padding(
                         padding: const EdgeInsets.only(left: 24, right: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            MaterialButton(onPressed: (){
-                              controller.reverse();
-                              Navigator.pop(context);
-                              }, child: MyText().small(context, "Cancel", adjust: -1), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),), color: Colors.red,),
-                            MaterialButton(onPressed: () async{
-                              final String gameplayID = Provider.of<DeviceProvider>(context, listen: false).currentOnlineGameplayID;
-                              final DataSnapshot snapshot = await FirebaseDatabase.instance.ref("gameSessions/$gameplayID/gridType").get();
-
-                             if(context.mounted)  Navigator.push(context, MaterialPageRoute(builder: (context) => PlayOnline(playAs: "player1", gridType: int.parse(snapshot.value.toString()), gameplayID: gameplayID,)));
-                            }, child: MyText().small(context, "Join player", adjust: -1), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),), color: Colors.green,)
-                          ],
+                        child: SizedBox(
+                          width: 200,
+                          child: MaterialButton(
+                            onPressed: (){
+                              OnlinePlay(context).joinPlayerFromGameRequestReady(widget.gameIDToJoin);
+                            },
+                            child: MyText().small(context, "Join player", adjust: -1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            color: Colors.green,
+                          ),
                         ),
                       ),
                     ],

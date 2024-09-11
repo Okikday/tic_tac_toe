@@ -7,7 +7,7 @@ class Gameplay {
     
     // Ensure there are enough moves to determine a winner
     if (count < 5) {
-      return null; // Not enough moves for a winner
+      return null;
     }
 
     int counter = 0;
@@ -43,9 +43,14 @@ class Gameplay {
     return null; // No winner
   }
 
+
+
+
+
+
   int? checkWinnerGrid4(List<int?> listToCheck, int count) {
   // Ensure there are enough moves to determine a winner
-  if (count < 7) { // Minimum 7 moves required for a winner in a 4x4 grid
+  if (count < 4) { // Minimum 4 moves required for a winner in a 4x4 grid
     return null;
   }
 
@@ -65,6 +70,12 @@ class Gameplay {
 
   return null; // No winner
 }
+
+
+
+
+
+
 
 
 int? checkWinnerGrid5(List<int?> listToCheck, int count) {
@@ -89,6 +100,7 @@ int? checkWinnerGrid5(List<int?> listToCheck, int count) {
 
   return null; // No winner
 }
+
 
 
 

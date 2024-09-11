@@ -4,23 +4,25 @@ import 'package:tic_tac_toe/common/styles/colors.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/services/providers/device_provider.dart';
 
-class Scoreboard extends StatefulWidget {
+class OnlineScoreboard extends StatefulWidget {
   final String playingWith;
   final int score1;
   final int score2;
-  const Scoreboard({
+  final String otherPlayerPhotoURL;
+  const OnlineScoreboard({
     super.key,
     this.playingWith = "person",
     this.score1 = 0,
     this.score2 = 0,
+    required this.otherPlayerPhotoURL
     
   });
 
   @override
-  State<Scoreboard> createState() => _ScoreboardState();
+  State<OnlineScoreboard> createState() => _OnlineScoreboardState();
 }
 
-class _ScoreboardState extends State<Scoreboard> with SingleTickerProviderStateMixin{
+class _OnlineScoreboardState extends State<OnlineScoreboard> with SingleTickerProviderStateMixin{
    late AnimationController controller;
   late Animation<double> val;
   @override
@@ -76,7 +78,7 @@ class _ScoreboardState extends State<Scoreboard> with SingleTickerProviderStateM
                 MyText().small(context, "You", ),
               ],
             ),
-            Expanded(child: Padding(padding: EdgeInsets.only(bottom: 18), child: MyText().small(context, "vs", align: TextAlign.center,),),),
+            Expanded(child: Padding(padding: const EdgeInsets.only(bottom: 18), child: MyText().small(context, "vs", align: TextAlign.center,),),),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -84,7 +86,7 @@ class _ScoreboardState extends State<Scoreboard> with SingleTickerProviderStateM
                   children: [
                     MyText().big(context, widget.score2.toString(), adjust: 8),
                     Constants.whiteSpaceHorizontal(24),
-                    ProfilePhotoAvatar(photoURL: "assets/images/robot.png")
+                    ProfilePhotoAvatar(photoURL: widget.otherPlayerPhotoURL)
                   ],
                 ),
                 Constants.whiteSpaceVertical(8),
@@ -119,9 +121,9 @@ class ProfilePhotoAvatar extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         child: CircleAvatar(
           radius: 28,
-          child: photoURL.isEmpty || photoURL == "not-set"
+          child: photoURL.isEmpty || photoURL == "not-set" || photoURL == "null"
               ? Image.asset("assets/images/no_profile_photo_user_2.png")
-              : (photoURL == "assets/images/robot.png" ? Image.asset(photoURL) : Image.network(photoURL)),
+              : Image.network(photoURL),
         ),
       ),
     );

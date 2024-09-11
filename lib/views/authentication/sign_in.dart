@@ -6,7 +6,7 @@ import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/common/widgets/checkmark_anim.dart';
 import 'package:tic_tac_toe/common/widgets/custom_textfield.dart';
 import 'package:tic_tac_toe/data/firebase_data.dart';
-import 'package:tic_tac_toe/services/device_provider.dart';
+import 'package:tic_tac_toe/services/providers/device_provider.dart';
 import 'package:tic_tac_toe/services/user_auth.dart';
 import 'package:tic_tac_toe/views/gameplay/online_widgets/online_players.dart';
 
@@ -144,7 +144,8 @@ class _SignInState extends State<SignIn> {
           final dynamic outcomeGetUserData = await firebaseData.getUserData(uid);
           if(context.mounted){
             if(outcomeGetUserData is! String){
-            Provider.of<DeviceProvider>(context, listen: false).saveUserDetails(outcomeGetUserData['name'], email, outcomeGetUserData['id']);
+            
+            Provider.of<DeviceProvider>(context, listen: false).saveUserDetails(outcomeGetUserData['name'], email, outcomeGetUserData['id'], outcomeGetUserData['photoURL']);
             setState(()=>isLoadingVisible = false);
             Navigator.pop(context);
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OnlinePlayers()));

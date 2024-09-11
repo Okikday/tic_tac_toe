@@ -1,18 +1,13 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
-import 'package:tic_tac_toe/models/gameplay.dart';
 
 class OnlineGridboard3By3 extends StatefulWidget {
-  final List<dynamic>? gameplayList;
-  final String playAs;
-  final String gameplayID;
+  final List<String?> boardTexts;
   
   const OnlineGridboard3By3({
     super.key,
-    required this.gameplayList,
-    required this.playAs,
-    required this.gameplayID,
+    required this.boardTexts
+
   });
 
   @override
@@ -55,103 +50,12 @@ class _OnlineGridboard3By3State extends State<OnlineGridboard3By3> {
                   childAspectRatio: 1.0,
                 ),
                 itemBuilder: (context, index) {
-                  String? textToShow = widget.gameplayList![index];
-                  if(textToShow != null){
-                    if(textToShow == "0"){
-                      textToShow = 'O';
-                    }else if(textToShow == '1'){
-                      textToShow = 'X';
-                    }else{
-                      textToShow = '';
-                    }
-                  }
+                  
                   return GridItem(
-                    text: textToShow ?? "",
+                    text: widget.boardTexts[index] ?? "",
                     onpressed: () async{
                       debugPrint("$index clicked!");
-                      debugPrint("Play as: ${widget.playAs}");
-                      if(widget.playAs == "player1"){
-                        final int useIndex = index;
-                        DatabaseReference dbGameplayRef = FirebaseDatabase.instance.ref("gameSessions/${widget.gameplayID}/gameplayList");
-                        DataSnapshot dataSnapshot = await dbGameplayRef.get();
-                        List<dynamic>? list = dataSnapshot.value as List<dynamic>?;
-                        print("${dataSnapshot.exists}");
-                        int count = 0;
-                        for(int i = 0; i < list!.length; i++){
-                          list[i] != "null" ? count++ : count;
-                        }
-                        if(count%2 == 0){
-                         list[useIndex] = "1";
-                        }
-                        await dbGameplayRef.update({
-                          for(int i = 0; i < list.length; i++) i.toString() : list[i].toString()
-                        });
-                        List<int?> listToCheck = [];
-                        for(int i = 0; i < list.length; i++){
-                          final dynamic item = list[i];
-                          if(item == "null" || item == null){
-                            listToCheck.add(null);
-                          }else if(item == "0"){
-                            listToCheck.add(0);
-                          }else if(item == "1"){
-                            listToCheck.add(1);
-                          }
-                        }
-                        final int? checkWinner = Gameplay().checkWinnerGrid3(listToCheck, count);
-                        if(checkWinner == 0){
-                          await FirebaseDatabase.instance.ref("gameSessions/${widget.gameplayID}/").update({
-                            'currentWinBy': "player2"
-                          });
-                          //O won
-                        }else if(checkWinner == 1){
-                          //X won
-                          await FirebaseDatabase.instance.ref("gameSessions/${widget.gameplayID}/").update({
-                            'currentWinBy': "player1"
-                          });
-                        }
-                      }
-                      if(widget.playAs == "player2"){
-                        final int useIndex = index;
-                        DatabaseReference dbGameplayRef = FirebaseDatabase.instance.ref("gameSessions/${widget.gameplayID}/gameplayList");
-                        DataSnapshot dataSnapshot = await dbGameplayRef.get();
-                        List<dynamic>? list = dataSnapshot.value as List<dynamic>?;
-                        print("${dataSnapshot.exists}");
-                        int count = 0;
-                        for(int i = 0; i < list!.length; i++){
-                          list[i] != "null" ? count++ : count;
-                        }
-                        if(count%2 == 1){
-                         list[useIndex] = "0";
-                        }
-                        await dbGameplayRef.update({
-                          for(int i = 0; i < list.length; i++) i.toString() : list[i].toString()
-                        });
-                         List<int?> listToCheck = [];
-                        for(int i = 0; i < list.length; i++){
-                          final dynamic item = list[i];
-                          if(item == "null" || item == null){
-                            listToCheck.add(null);
-                          }else if(item == "0"){
-                            listToCheck.add(0);
-                          }else if(item == "1"){
-                            listToCheck.add(1);
-                          }
-                        }
-                        final int? checkWinner = Gameplay().checkWinnerGrid3(listToCheck, count);
-                        if(checkWinner == 0){
-                          await FirebaseDatabase.instance.ref("gameSessions/${widget.gameplayID}/").update({
-                            'currentWinBy': "player2"
-                          });
-                          //O won
-                        }else if(checkWinner == 1){
-                          //X won
-                          await FirebaseDatabase.instance.ref("gameSessions/${widget.gameplayID}/").update({
-                            'currentWinBy': "player1"
-                          });
-                        }
-                      }
-                      
-                     
+                      debugPrint("Plays ${widget.boardTexts[index]}");
                     },
                   );
                 },

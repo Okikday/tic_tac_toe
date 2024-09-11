@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/common/widgets/checkmark_anim.dart';
 import 'package:tic_tac_toe/common/widgets/custom_textfield.dart';
+import 'package:tic_tac_toe/common/widgets/loading_dialog.dart';
 import 'package:tic_tac_toe/services/user_auth.dart';
 import 'package:tic_tac_toe/views/authentication/sign_in.dart';
 import 'package:tic_tac_toe/views/gameplay/online_widgets/online_players.dart';
@@ -196,23 +197,3 @@ void signInWithGoogleButtonAction(context)async{
 }
 
 
-class LoadingDialog extends StatelessWidget {
-  final bool canPop;
-  const LoadingDialog({
-    super.key,
-    required this.canPop
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return PopScope(
-      canPop: canPop,
-      onPopInvokedWithResult: (didPop, result) {
-        
-      },
-      child: const Dialog(
-        child: Center(child: CircularProgressIndicator()),
-      ),
-    );
-  }
-}

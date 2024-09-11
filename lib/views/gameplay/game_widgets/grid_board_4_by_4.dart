@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
+import 'package:tic_tac_toe/utils/device_utils.dart';
 
 class GridBoard4by4 extends StatefulWidget {
   final void Function(int index) onpressed;
@@ -36,10 +37,7 @@ class _GridBoard4by4State extends State<GridBoard4by4> {
           ),
           child: Stack(
             children: [
-              CustomPaint(
-                size: const Size(300, 300),
-                painter: HashShapePainter4x4(),
-              ),
+              const SizedBox(width: 300, height: 300, child: AnimatedHashShape4x4(),),
               GridView.builder(
                 padding: const EdgeInsets.all(0),
                 physics: const NeverScrollableScrollPhysics(),
@@ -132,7 +130,7 @@ class _GridItemState extends State<GridItem>
                   widget.text == "null" ? "" : widget.text,
                   align: TextAlign.center,
                   adjust: 16,
-                  color: Colors.red,
+                   color: widget.text == "X" ? Colors.red : DeviceUtils.isDarkMode(context) ? Colors.white : Colors.black,
                 ),
               ),
             ),
@@ -143,14 +141,71 @@ class _GridItemState extends State<GridItem>
   }
 }
 
-// Painter for 4 by 4 grid
+// Animated Hash Shape for 4x4 grid
+class AnimatedHashShape4x4 extends StatefulWidget {
+  const AnimatedHashShape4x4({super.key});
+
+  @override
+  State<AnimatedHashShape4x4> createState() => _AnimatedHashShape4x4State();
+}
+
+class _AnimatedHashShape4x4State extends State<AnimatedHashShape4x4>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _animation = Tween<double>(begin: 0.5, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.decelerate,
+      ),
+    );
+
+    // Start the animation after a short delay
+    Future.delayed(const Duration(milliseconds: 200), () => _controller.forward());
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _animation,
+      child: FadeTransition(
+        opacity: _animation,
+        child: CustomPaint(
+          size: const Size(300, 300),
+          painter: HashShapePainter4x4(
+            Paint()
+              ..color = const Color.fromARGB(255, 156, 121, 133).withOpacity(0.5)
+              ..style = PaintingStyle.fill,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Painter for 4x4 grid
 class HashShapePainter4x4 extends CustomPainter {
+  final Paint paintStyle;
+
+  HashShapePainter4x4(this.paintStyle);
+
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-
     final double quarterWidth = size.width / 4;
     final double quarterHeight = size.height / 4;
     const double lineThickness = 8.0;
@@ -158,15 +213,19 @@ class HashShapePainter4x4 extends CustomPainter {
 
     for (int i = 1; i < 4; i++) {
       final RRect horizontalRect = RRect.fromRectAndRadius(
-        Rect.fromLTWH(0, i * quarterHeight - lineThickness / 2, size.width, lineThickness),
+        Rect.fromLTWH(
+          0, i * quarterHeight - lineThickness / 2, size.width, lineThickness,
+        ),
         const Radius.circular(radius),
       );
       final RRect verticalRect = RRect.fromRectAndRadius(
-        Rect.fromLTWH(i * quarterWidth - lineThickness / 2, 0, lineThickness, size.height),
+        Rect.fromLTWH(
+          i * quarterWidth - lineThickness / 2, 0, lineThickness, size.height,
+        ),
         const Radius.circular(radius),
       );
-      canvas.drawRRect(horizontalRect, paint);
-      canvas.drawRRect(verticalRect, paint);
+      canvas.drawRRect(horizontalRect, paintStyle);
+      canvas.drawRRect(verticalRect, paintStyle);
     }
   }
 

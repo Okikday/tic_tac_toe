@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
-import 'package:tic_tac_toe/services/game_provider_3_by_3.dart';
+import 'package:tic_tac_toe/services/providers/game_provider_3_by_3.dart';
+import 'package:tic_tac_toe/utils/device_utils.dart';
 
 class GridBoard3by3 extends StatefulWidget {
   final void Function(int index) onpressed;
@@ -40,10 +41,7 @@ class _GridBoard3by3State extends State<GridBoard3by3> {
           ),
           child: Stack(
             children: [
-              CustomPaint(
-                size: const Size(300, 300),
-                painter: HashShapePainter(),
-              ),
+              const SizedBox(width: 300, height: 300,child: AnimatedHashShape(),),
               GridView.builder(
                 padding: const EdgeInsets.all(0),
                 physics: const NeverScrollableScrollPhysics(),
@@ -81,7 +79,7 @@ class GridItem extends StatefulWidget {
   const GridItem({
     super.key,
     this.onpressed,
-    this.text = "lol",
+    this.text = "",
   });
   @override
   State<GridItem> createState() => _GridItemState();
@@ -97,7 +95,7 @@ class _GridItemState extends State<GridItem>
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 200),
     );
     colorVal = ColorTween(
             begin: Colors.transparent, end: Colors.white.withOpacity(0.1))
@@ -141,7 +139,7 @@ class _GridItemState extends State<GridItem>
                   widget.text == "null" ? "" : widget.text,
                   align: TextAlign.center,
                   adjust: 16,
-                  color: Colors.red,
+                  color: widget.text == "X" ? Colors.red : DeviceUtils.isDarkMode(context) ? Colors.white : Colors.black,
                 ),
               ),
             ),
@@ -152,18 +150,74 @@ class _GridItemState extends State<GridItem>
   }
 }
 
+
+
+//Hash Shape 3 by 3
+class AnimatedHashShape extends StatefulWidget {
+  const AnimatedHashShape({super.key});
+
+  @override
+  State<AnimatedHashShape> createState() => _AnimatedHashShapeState();
+}
+
+class _AnimatedHashShapeState extends State<AnimatedHashShape>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _animation = Tween<double>(begin: 0.5, end: 1).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.decelerate
+      ),
+      
+    );
+   
+    // Start the animation
+    Future.delayed(const Duration(milliseconds: 200), () => _controller.forward());
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _animation,
+      child: CustomPaint(
+        size: const Size(300, 300),
+        painter: HashShapePainter(
+          Paint()
+            ..color = const Color.fromARGB(255, 201, 164, 209).withOpacity(0.5)
+            ..style = PaintingStyle.fill,
+        ),
+      ),
+    );
+  }
+}
+
 // Painter for 3 by 3 grid
 class HashShapePainter extends CustomPainter {
+  final Paint paintStyle;
+
+  HashShapePainter(this.paintStyle);
+
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-
     final double thirdWidth = size.width / 3;
     final double thirdHeight = size.height / 3;
     const double lineThickness = 8.0;
-    const double radius = 24.0;
+    const double radius = 0.0;
 
     final RRect topRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(
@@ -187,10 +241,10 @@ class HashShapePainter extends CustomPainter {
       const Radius.circular(radius),
     );
 
-    canvas.drawRRect(topRect, paint);
-    canvas.drawRRect(bottomRect, paint);
-    canvas.drawRRect(leftRect, paint);
-    canvas.drawRRect(rightRect, paint);
+    canvas.drawRRect(topRect, paintStyle);
+    canvas.drawRRect(bottomRect, paintStyle);
+    canvas.drawRRect(leftRect, paintStyle);
+    canvas.drawRRect(rightRect, paintStyle);
   }
 
   @override
@@ -198,3 +252,4 @@ class HashShapePainter extends CustomPainter {
     return false;
   }
 }
+

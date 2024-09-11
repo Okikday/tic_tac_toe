@@ -1,10 +1,9 @@
-import 'package:another_flushbar/flushbar_route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/data/shared_prefs_data_1.dart';
 import 'package:tic_tac_toe/models/gameplay.dart';
 import 'package:tic_tac_toe/models/generate_play.dart';
-import 'package:tic_tac_toe/services/device_provider.dart';
+import 'package:tic_tac_toe/services/providers/device_provider.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 import 'package:tic_tac_toe/views/gameplay/game_widgets/game_result_dialog.dart';
 
@@ -73,11 +72,11 @@ class GameProvider3by3 extends ChangeNotifier {
         if(challengeType == 'E'){
           compPos = GeneratePlayGridThree().easyMove(_gameplayList);
         }else if(challengeType == 'M'){
-          compPos = GeneratePlayGridThree().mediumMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1);
+          compPos = GeneratePlayGridThree().mediumMove(_gameplayList,);
         }else if(challengeType == 'H'){
-          compPos = GeneratePlayGridThree().hardMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1);
+          compPos = GeneratePlayGridThree().hardMove(_gameplayList,);
         }else{
-          compPos = GeneratePlayGridThree().mediumMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1);
+          compPos = GeneratePlayGridThree().mediumMove(_gameplayList,);
         }
         xPlay(context, compPos);
         
@@ -143,11 +142,11 @@ class GameProvider3by3 extends ChangeNotifier {
         if(challengeType == 'E'){
           compPos = GeneratePlayGridThree().easyMove(_gameplayList);
         }else if(challengeType == 'M'){
-          compPos = GeneratePlayGridThree().mediumMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1);
+          compPos = GeneratePlayGridThree().mediumMove(_gameplayList,);
         }else if(challengeType == 'H'){
-          compPos = GeneratePlayGridThree().hardMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1);
+          compPos = GeneratePlayGridThree().hardMove(_gameplayList, );
         }else{
-          compPos = GeneratePlayGridThree().mediumMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1);
+          compPos = GeneratePlayGridThree().mediumMove(_gameplayList,);
         }
         xPlay(context, compPos);
         
@@ -161,11 +160,11 @@ class GameProvider3by3 extends ChangeNotifier {
         if(challengeType == 'E'){
           compPos = GeneratePlayGridThree().easyMove(_gameplayList);
         }else if(challengeType == 'M'){
-          compPos = GeneratePlayGridThree().mediumMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1);
+          compPos = GeneratePlayGridThree().mediumMove(_gameplayList,);
         }else if(challengeType == 'H'){
-          compPos = GeneratePlayGridThree().hardMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1);
+          compPos = GeneratePlayGridThree().hardMove(_gameplayList,);
         }else{
-          compPos = GeneratePlayGridThree().mediumMove(_gameplayList, _currentGameUserChoice == 'X' ? 0 : 1);
+          compPos = GeneratePlayGridThree().mediumMove(_gameplayList,);
         }
         oPlay(context, compPos);
         
@@ -224,7 +223,8 @@ class GameProvider3by3 extends ChangeNotifier {
         await SharedPrefsData1.setUserScore(_userScore);
         _playerTurn = null;
         if(context.mounted){
-        showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(result: "User won",));
+          
+        showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(winner: "user"));
         debugPrint("User won");
         
         }
@@ -233,7 +233,7 @@ class GameProvider3by3 extends ChangeNotifier {
         await SharedPrefsData1.setCompScore(_compScore);
         _playerTurn = null;
         if(context.mounted){
-        showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(result: "Computer won",));
+        showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(winner: "computer"));
         debugPrint("Computer won");
         }
       } 
@@ -247,7 +247,7 @@ class GameProvider3by3 extends ChangeNotifier {
         await SharedPrefsData1.setUserScore(_userScore);
         _playerTurn = null;
         if(context.mounted){
-        showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(result: "User won",));
+        showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(winner: "user"));
         debugPrint("User won");
         
         }
@@ -256,7 +256,7 @@ class GameProvider3by3 extends ChangeNotifier {
         await SharedPrefsData1.setCompScore(_compScore);
         _playerTurn = null;
         if(context.mounted){
-        showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(result: "Computer won",));
+        showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(winner: "computer"));
         debugPrint("Computer won");
         }
       }
@@ -264,7 +264,7 @@ class GameProvider3by3 extends ChangeNotifier {
     }
     if(winVal == null && count == 9){
        if(context.mounted){
-        showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(result: "It's a draw",));
+        showDialog(context: context, barrierDismissible: false, builder: (context) => const GameResultDialog(winner: "draw",));
         debugPrint("It's a Draw");
         }
     }
@@ -311,14 +311,12 @@ class GameProvider3by3 extends ChangeNotifier {
   }
 
 
-  void toggleUserChoice(BuildContext context) async {
-    final String newChoice =
-        (await SharedPrefsData1.getUserChoice()) == 'X' ? 'O' : 'X';
+  Future<String?> toggleUserChoice() async {
+    final String newChoice = (await SharedPrefsData1.getUserChoice()) == 'X' ? 'O' : 'X';
     await SharedPrefsData1.setUserChoice(newChoice);
     _userChoice = newChoice;
     notifyListeners();
-    // ignore: use_build_context_synchronously
-    DeviceUtils.showFlushBar(context, "You chose $newChoice");
+    return _userChoice;
   }
 
   void onWin(String win){
