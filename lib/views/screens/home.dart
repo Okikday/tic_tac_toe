@@ -51,6 +51,7 @@ class _HomeState extends State<Home> {
       body: SingleChildScrollView(
         child: Container(
           width: screenWidth,
+          height: screenHeight,
           decoration: BoxDecoration(
             color: const Color.fromARGB(255, 201, 164, 209).withOpacity(0.05),
           ),
@@ -183,24 +184,27 @@ class _HomeState extends State<Home> {
                 ),
               ),
 
-              Constants.whiteSpaceVertical(screenHeight * 0.04),
+              Constants.whiteSpaceVertical(32),
 
               //Leaderboard
-              Padding(
-                padding: const EdgeInsets.only(left: 24, right: 24),
-                child: Hero(
-                  tag: "leaderboard",
-                  child: CustomRectangularBox1(
-                      height: screenHeight * 0.1,
-                      screenWidth: screenWidth,
-                      isDialog: false,
-                      page: const Hero(tag: "leaderboard", child: Leaderboard()),
-                      svgPath: "assets/images/leaderboard-svgrepo.svg",
-                      title: "Leaderboards",
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 24, right: 24),
+                  child: Align(alignment: Alignment.topCenter,
+                    child: Hero(
+                      tag: "leaderboard",
+                      child: CustomRectangularBox1(
+                          screenWidth: screenWidth,
+                          height: 80,
+                          isDialog: false,
+                          page: const Hero(tag: "leaderboard", child: Leaderboard()),
+                          svgPath: "assets/images/leaderboard-svgrepo.svg",
+                          title: "Leaderboards",
+                        ),
                     ),
+                  ),
                 ),
               ),
-              Constants.whiteSpaceVertical(36)
             ],
           ),
         ),

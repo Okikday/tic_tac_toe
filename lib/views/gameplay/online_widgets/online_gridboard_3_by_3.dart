@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
+import 'package:tic_tac_toe/services/providers/online_provider.dart';
 
 class OnlineGridboard3By3 extends StatefulWidget {
-  final List<String?> boardTexts;
   
   const OnlineGridboard3By3({
     super.key,
-    required this.boardTexts
 
   });
 
@@ -50,12 +50,15 @@ class _OnlineGridboard3By3State extends State<OnlineGridboard3By3> {
                   childAspectRatio: 1.0,
                 ),
                 itemBuilder: (context, index) {
-                  
+                  final List<String?> list = Provider.of<OnlineProvider>(context).boardTexts;
+
                   return GridItem(
-                    text: widget.boardTexts[index] ?? "",
+                    text:  list[index] ?? "",
                     onpressed: () async{
                       debugPrint("$index clicked!");
-                      debugPrint("Plays ${widget.boardTexts[index]}");
+                      Provider.of<OnlineProvider>(context, listen: false).onlinePlayGame(context, index);
+                      print("boardTexts: ${Provider.of<OnlineProvider>(context, listen: false).boardTexts}");
+                      print("playingAs ${Provider.of<OnlineProvider>(context, listen: false).playingAs}");
                     },
                   );
                 },
@@ -132,10 +135,10 @@ class _GridItemState extends State<GridItem>
                 color: Colors.transparent,
                 child: MyText().big(
                   context,
-                  widget.text == "null" ? "" : widget.text,
+                  widget.text,
                   align: TextAlign.center,
                   adjust: 16,
-                  color: Colors.red,
+                  color: widget.text == 'X' ? Colors.red : Colors.black,
                 ),
               ),
             ),

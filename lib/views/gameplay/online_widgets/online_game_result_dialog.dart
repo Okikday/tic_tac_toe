@@ -1,11 +1,14 @@
 import 'dart:ui';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
+import 'package:tic_tac_toe/data/shared_prefs_data_1.dart';
 import 'package:tic_tac_toe/services/providers/device_provider.dart';
 import 'package:tic_tac_toe/services/providers/online_provider.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
+import 'package:tic_tac_toe/views/gameplay/online_widgets/launch_game_online_play.dart';
 
 class OnlineGameResultDialog extends StatefulWidget {
   final String message;
@@ -143,8 +146,20 @@ class _OnlineGameResultDialogState extends State<OnlineGameResultDialog>
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             ElevatedButton(
-                              onPressed: () {
-                                
+                              onPressed: () async{
+                                final String gameplayID = Provider.of<OnlineProvider>(context, listen: false).currentOnlineGameplayID;
+                                final String userID = Provider.of<DeviceProvider>(context, listen: false).userId;
+                                await FirebaseDatabase.instance.ref("gameSessions/$gameplayID/endedSession").set(true);
+                                if(context.mounted) {
+                                  Navigator.pop(context);
+                                  DeviceUtils.showFlushBar(context, "You ended the session");
+                                }
+                                final String playingAs = Provider.of<OnlineProvider>(context, listen: false).playingAs;
+                                if(playingAs == "player1"){
+                                  FirebaseDatabase.instance.ref("onlinePlayers/$userID/sentRequests/$gameplayID").remove();
+                                }else if(playingAs == "player2"){
+                                  FirebaseDatabase.instance.ref("onlinePlayers/$userID/requests/$gameplayID").remove();
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.redAccent,
@@ -161,8 +176,25 @@ class _OnlineGameResultDialogState extends State<OnlineGameResultDialog>
                               ),
                             ),
                             ElevatedButton(
-                              onPressed: () {
-                               
+                              onPressed: () async{
+                                final String gameplayID = Provider.of<OnlineProvider>(context, listen: false).currentOnlineGameplayID;
+                               final Map<String, String> resetList = {
+                                  for (int i = 0; i < SharedPrefsData1.defaultGameplayListGrid3.length; i++)
+                                    i.toString(): SharedPrefsData1.defaultGameplayListGrid3[i].toString()
+                                };
+                                await FirebaseDatabase.instance.ref("gameSessions/$gameplayID").update({
+                                  "gameplayList": resetList,
+                                });
+                                if(context.mounted){
+                                  Navigator.pop(context);
+                                  DeviceUtils.pushMaterialPage(context, LaunchGameOnlinePlay(
+                                    gridType: 3,
+                                    gameplayID: gameplayID,
+                                    otherPlayerPhotoURL: widget.otherPlayerPhotoURL,
+                                    otherPlayerName: widget.otherPlayerName)
+                                );
+                                await FirebaseDatabase.instance.ref("gameSessions/$gameplayID/currentWinBy").set("newSession");
+                              }
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,

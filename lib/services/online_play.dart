@@ -82,7 +82,7 @@ class OnlinePlay {
         'uid': myUID,
         'photoURL': myDataSnapshot.child("photoURL").value.toString(),
         'choice': choice,
-        'status': "online"
+        'status': "online",
       },
       'player2': {
         'userName': otherPlayerDataSnapshot.child("name").value.toString(),
@@ -122,7 +122,7 @@ void acceptGameplay({required String gameplayID}) async{
         Provider.of<OnlineProvider>(_context, listen: false).setOtherPlayerScore(dataMap["score"]["player1"]);
         Provider.of<OnlineProvider>(_context, listen: false).setUserChoice(dataMap["player2"]["choice"]);
         Provider.of<OnlineProvider>(_context, listen: false).setCurrentOnlineGameplayID(gameplayID);
-        Provider.of<OnlineProvider>(_context, listen: false).setMyTurn(dataMap["player1"]["choice"] == 'X' ? true : false);
+        Provider.of<OnlineProvider>(_context, listen: false).setPlayingAs("player2");
         Navigator.pop(_context);
 
         DeviceUtils.pushMaterialPage(
@@ -133,11 +133,33 @@ void acceptGameplay({required String gameplayID}) async{
                 gameplayID: gameplayID,
                 otherPlayerPhotoURL: dataMap["player1"]["photoURL"],
               ));
+        
         }
       }
   }
 
 
+}
+
+void rejectGameplay(String gameplayID, String otherPlayerID, String myUID) async{
+    await FirebaseDatabase.instance.ref("onlinePlayer/$otherPlayerID/sentRequests/$gameplayID").remove();
+    FirebaseDatabase.instance.ref("onlinePlayer/$myUID/requests/$gameplayID").remove();
+    gameSessionRef.child(gameplayID).remove();
+    
+  }
+void endOnlineGame(String userID, String gameplayID){
+  Navigator.pop(_context);
+  gameSessionRef.child("$gameplayID/endedSession").set(true);
+  Future.delayed(const Duration(seconds: 2), (){
+    if(_context.mounted){
+      final String playingAs = Provider.of<OnlineProvider>(_context, listen: false).playingAs;
+    if (playingAs == "player1") {
+    FirebaseDatabase.instance.ref("onlinePlayers/$userID/sentRequests/$gameplayID").remove();
+  } else if (playingAs == "player2") {
+    FirebaseDatabase.instance.ref("onlinePlayers/$userID/requests/$gameplayID").remove();
+  }
+    }
+  });
 }
 
 
@@ -197,7 +219,7 @@ void joinPlayerFromGameRequestReady(String gameplayID) async{
         Provider.of<OnlineProvider>(_context, listen: false).setOtherPlayerScore(dataMap["score"]["player2"]);
         Provider.of<OnlineProvider>(_context, listen: false).setUserChoice(dataMap["player1"]["choice"]);
         Provider.of<OnlineProvider>(_context, listen: false).setCurrentOnlineGameplayID(gameplayID);
-        Provider.of<OnlineProvider>(_context, listen: false).setMyTurn(dataMap["player1"]["choice"] == 'X' ? true : false);
+        Provider.of<OnlineProvider>(_context, listen: false).setPlayingAs("player1");
 
         Navigator.pop(_context);
         DeviceUtils.pushMaterialPage(
@@ -218,117 +240,5 @@ void joinPlayerFromGameRequestReady(String gameplayID) async{
    
  
 }
-
-
-// void checkIfWin(context)async{
-//     DatabaseReference dbGameplayRef = FirebaseDatabase.instance.ref("gameSessions/${widget.gameplayID}/currentWinBy");
-//     DataSnapshot snapshot = await dbGameplayRef.get();
-//     if(snapshot.exists){
-//       if(snapshot.value.toString() == "player1"){
-//         showDialog(context: context, barrierDismissible: false, builder: (context) => SomeoneWinsDialog(whoWon: "player1", gameplayID: widget.gameplayID));
-//       }else if(snapshot.value.toString() == "player2"){
-//         showDialog(context: context, barrierDismissible: false, builder: (context) => SomeoneWinsDialog(whoWon: "player2", gameplayID: widget.gameplayID));
-//       }
-//     }
-//   }
-
-
-
-// debugPrint("Play as: ${widget.playAs}");
-//                       if(widget.playAs == "player1"){
-//                         final int useIndex = index;
-//                         DatabaseReference dbGameplayRef = FirebaseDatabase.instance.ref("gameSessions/${widget.gameplayID}/gameplayList");
-//                         DataSnapshot dataSnapshot = await dbGameplayRef.get();
-//                         List<dynamic>? list = dataSnapshot.value as List<dynamic>?;
-//                         print("${dataSnapshot.exists}");
-//                         int count = 0;
-//                         for(int i = 0; i < list!.length; i++){
-//                           list[i] != "null" ? count++ : count;
-//                         }
-//                         if(count%2 == 0){
-//                          list[useIndex] = "1";
-//                         }
-//                         await dbGameplayRef.update({
-//                           for(int i = 0; i < list.length; i++) i.toString() : list[i].toString()
-//                         });
-//                         List<int?> listToCheck = [];
-//                         for(int i = 0; i < list.length; i++){
-//                           final dynamic item = list[i];
-//                           if(item == "null" || item == null){
-//                             listToCheck.add(null);
-//                           }else if(item == "0"){
-//                             listToCheck.add(0);
-//                           }else if(item == "1"){
-//                             listToCheck.add(1);
-//                           }
-//                         }
-//                         final int? checkWinner = Gameplay().checkWinnerGrid3(listToCheck, count);
-//                         if(checkWinner == 0){
-//                           await FirebaseDatabase.instance.ref("gameSessions/${widget.gameplayID}/").update({
-//                             'currentWinBy': "player2"
-//                           });
-//                           //O won
-//                         }else if(checkWinner == 1){
-//                           //X won
-//                           await FirebaseDatabase.instance.ref("gameSessions/${widget.gameplayID}/").update({
-//                             'currentWinBy': "player1"
-//                           });
-//                         }
-//                       }
-//                       if(widget.playAs == "player2"){
-//                         final int useIndex = index;
-//                         DatabaseReference dbGameplayRef = FirebaseDatabase.instance.ref("gameSessions/${widget.gameplayID}/gameplayList");
-//                         DataSnapshot dataSnapshot = await dbGameplayRef.get();
-//                         List<dynamic>? list = dataSnapshot.value as List<dynamic>?;
-//                         print("${dataSnapshot.exists}");
-//                         int count = 0;
-//                         for(int i = 0; i < list!.length; i++){
-//                           list[i] != "null" ? count++ : count;
-//                         }
-//                         if(count%2 == 1){
-//                          list[useIndex] = "0";
-//                         }
-//                         await dbGameplayRef.update({
-//                           for(int i = 0; i < list.length; i++) i.toString() : list[i].toString()
-//                         });
-//                          List<int?> listToCheck = [];
-//                         for(int i = 0; i < list.length; i++){
-//                           final dynamic item = list[i];
-//                           if(item == "null" || item == null){
-//                             listToCheck.add(null);
-//                           }else if(item == "0"){
-//                             listToCheck.add(0);
-//                           }else if(item == "1"){
-//                             listToCheck.add(1);
-//                           }
-//                         }
-//                         final int? checkWinner = Gameplay().checkWinnerGrid3(listToCheck, count);
-//                         if(checkWinner == 0){
-//                           await FirebaseDatabase.instance.ref("gameSessions/${widget.gameplayID}/").update({
-//                             'currentWinBy': "player2"
-//                           });
-//                           //O won
-//                         }else if(checkWinner == 1){
-//                           //X won
-//                           await FirebaseDatabase.instance.ref("gameSessions/${widget.gameplayID}/").update({
-//                             'currentWinBy': "player1"
-//                           });
-//                         }
-//                       }
-                      
-
-// String? textToShow = widget.gameplayList![index];
-//                   if(textToShow != null){
-//                     if(textToShow == "0"){
-//                       textToShow = 'O';
-//                     }else if(textToShow == '1'){
-//                       textToShow = 'X';
-//                     }else{
-//                       textToShow = '';
-//                     }
-//                   }
-
-
-
 
 }

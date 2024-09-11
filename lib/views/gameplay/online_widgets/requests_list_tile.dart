@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 import 'package:tic_tac_toe/services/providers/device_provider.dart';
+import 'package:tic_tac_toe/views/gameplay/online_widgets/requests_to_play_online.dart';
 
 class RequestsListTile extends StatefulWidget {
   const RequestsListTile({super.key});
@@ -59,7 +60,7 @@ class _RequestsListTileState extends State<RequestsListTile> {
             children: [
               MaterialButton(
                 onPressed: () {
-                  // Logic for requests button
+                  DeviceUtils.pushMaterialPage(context, RequestsToPlayOnline(requests: requests,));
                 },
                 child: Row(
                   children: [
