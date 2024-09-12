@@ -4,7 +4,10 @@ A simple yet engaging Tic-Tac-Toe game built with Flutter, featuring a distincti
 
 Key Features:
 
-Customizable Grid Sizes:
+Customizable Grid Sizes
+
 Beautiful gradient designs that adapt to both light and dark modes, with smooth animations(Still working on making it the smoothest.)
+
 Firebase Integration: Utilizes Firebase for real-time gameplay and user data.
+
 Responsive Design: Responsive across different screen sizes.
