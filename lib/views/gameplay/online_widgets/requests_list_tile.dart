@@ -5,6 +5,7 @@ import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 import 'package:tic_tac_toe/services/providers/device_provider.dart';
 import 'package:tic_tac_toe/views/gameplay/online_widgets/requests_to_play_online.dart';
+import 'package:tic_tac_toe/views/gameplay/online_widgets/waiting_lists.dart';
 
 class RequestsListTile extends StatefulWidget {
   const RequestsListTile({super.key});
@@ -78,7 +79,7 @@ class _RequestsListTileState extends State<RequestsListTile> {
               ),
               MaterialButton(
                 onPressed: () {
-                  // Logic for waiting button
+                  DeviceUtils.pushMaterialPage(context, WaitingListsToPlayOnline(sentRequests: sentRequests));
                 },
                 child: Row(
                   children: [
@@ -169,12 +170,8 @@ class _RequestsListTileState extends State<RequestsListTile> {
                 },
                 child: Row(
                   children: [
-                    MyText().medium(context, "Waiting"),
-                    CircleAvatar(
-                      backgroundColor: const Color.fromARGB(255, 60, 142, 63),
-                      radius: 12,
-                      child: MyText().small(context, "0", invertColor: true), // No waiting data yet
-                    ),
+                    MyText().medium(context, "Requests"),
+                    const SizedBox(width: 12, height: 12, child: CircularProgressIndicator()), // Loading indicator for requests
                   ],
                 ),
               ),

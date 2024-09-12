@@ -11,7 +11,7 @@ class BackButton1 extends StatelessWidget {
         Navigator.of(context).pop();
       },
       style: ButtonStyle(
-        shape: WidgetStatePropertyAll(CircleBorder()),
+        shape: const WidgetStatePropertyAll(CircleBorder()),
         backgroundColor: WidgetStatePropertyAll(color),
       ),
       icon: const Icon(
@@ -19,7 +19,7 @@ class BackButton1 extends StatelessWidget {
         size: 24,
         color: Colors.black,
       ),
-      padding: EdgeInsets.all(6),
+      padding: const EdgeInsets.all(6),
     );
   }
 }

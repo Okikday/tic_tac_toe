@@ -28,7 +28,7 @@ class _CheckmarkAnimState extends State<CheckmarkAnim>  with SingleTickerProvide
   listener() {
     if (!controller.isAnimating && controller.isCompleted) {
       setState(()=> canPop = true);
-     Navigator.pop(context);
+     Navigator.of(context).pop();
     }
   }
   @override

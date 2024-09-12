@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/app.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/services/online_play.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
@@ -47,9 +48,6 @@ class _DialogGameRequestReadyState extends State<DialogGameRequestReady> with Si
     final double screenWidth = DeviceUtils.getScreenWidth(context);
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        DeviceUtils.showFlushBar(context, "Lol, who you wan finish with error handling. Oga fess enter game abeg");
-      },
       child: ScaleTransition(
         scale: scaleVal,
         child: Dialog(
@@ -129,7 +127,7 @@ class _DialogGameRequestReadyState extends State<DialogGameRequestReady> with Si
                           width: 200,
                           child: MaterialButton(
                             onPressed: (){
-                              OnlinePlay(context).joinPlayerFromGameRequestReady(widget.gameIDToJoin);
+                              OnlinePlay().joinPlayerFromGameRequestReady(widget.gameIDToJoin);
                             },
                             child: MyText().small(context, "Join player", adjust: -1),
                             shape: RoundedRectangleBorder(

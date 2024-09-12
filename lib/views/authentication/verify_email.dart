@@ -54,7 +54,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
       // ignore: use_build_context_synchronously
       Provider.of<DeviceProvider>(context, listen: false).saveUserDetails(widget.name, widget.email, widget.uid, "not-set");
       // ignore: use_build_context_synchronously
-      Navigator.pop(context);
+      Navigator.of(context).pop();
       // ignore: use_build_context_synchronously
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OnlinePlayers()));
       if(context.mounted){

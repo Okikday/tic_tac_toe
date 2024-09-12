@@ -35,8 +35,8 @@ class DialogLogOut extends StatelessWidget {
             if (context.mounted) {
               provider.resetUserDetails();
               // ignore: use_build_context_synchronously
-              Navigator.pop(context);
-              Navigator.pop(context);
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
               Future.delayed(const Duration(milliseconds: 50), () {
                 if (context.mounted) {
                   showDialog(

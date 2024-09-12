@@ -108,27 +108,30 @@ class _HomeState extends State<Home> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
-                    OptionBox(//
-                      child: Text(
-                        "Play with your Computer",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: Constants.medium,
+                    Hero(
+                      tag: "play-with-computer",
+                      child: OptionBox(
+                        child: Text(
+                          "Play with your Computer",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontSize: Constants.medium,
+                          ),
                         ),
+                        onpressed: () {
+                          final int checkGridType = Provider.of<DeviceProvider>(context, listen: false).gridType;
+                          if(checkGridType == 3){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp3By3()));
+                          }else if(checkGridType == 4){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp4By4()));
+                          }else if(checkGridType == 5){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp5By5()));
+                          }else{
+                            DeviceUtils.showFlushBar(context, "Try choosing a Grid type");
+                          }
+                        },
                       ),
-                      onpressed: () {
-                        final int checkGridType = Provider.of<DeviceProvider>(context, listen: false).gridType;
-                        if(checkGridType == 3){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp3By3()));
-                        }else if(checkGridType == 4){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp4By4()));
-                        }else if(checkGridType == 5){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayWithComp5By5()));
-                        }else{
-                          DeviceUtils.showFlushBar(context, "Try choosing a Grid type");
-                        }
-                      },
                     ),
                     OptionBox(
                       child: Text(

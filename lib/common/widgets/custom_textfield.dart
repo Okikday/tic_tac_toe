@@ -110,7 +110,7 @@ class _TextFieldState extends State<CustomTextfield> {
         style: TextStyle(color: Theme.of(context).colorScheme.primary),
         decoration: InputDecoration(
           prefixIcon: widget.prefixIcon,
-          suffixIcon: checkForSuffixIcon == true ? widget.suffixIcon : SizedBox(),
+          suffixIcon: checkForSuffixIcon == true ? widget.suffixIcon : const SizedBox(),
           hintText: widget.hint,
           labelText: widget.label,
           labelStyle: widget.labelStyle ?? TextStyle(color: Theme.of(context).colorScheme.onPrimary),
@@ -120,7 +120,7 @@ class _TextFieldState extends State<CustomTextfield> {
           contentPadding: const EdgeInsets.all(16),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(
+            borderSide: const BorderSide(
               color: Colors.grey,
               width: 1.5,
             ),
@@ -135,7 +135,7 @@ class _TextFieldState extends State<CustomTextfield> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(
+            borderSide: const BorderSide(
               color: Colors.grey,
               width: 1.5,
             ),

@@ -28,10 +28,10 @@ class _ChallengeTypeSelectDialogState extends State<ChallengeTypeSelectDialog> w
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 350),
+      duration: const Duration(milliseconds: 250),
     );
 
-    scaleVal = Tween<double>(begin: 0.1, end: 1).animate(controller);
+    scaleVal = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: controller, curve: Curves.easeIn));
     controller.forward();
   }
 
@@ -45,44 +45,49 @@ class _ChallengeTypeSelectDialogState extends State<ChallengeTypeSelectDialog> w
   @override
   Widget build(BuildContext context) {
     final double screenWidth = DeviceUtils.getScreenWidth(context);
-    final double screenHeight = DeviceUtils.getScreenHeight(context);
 
     return PopScope(
-      canPop: true,
+      canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         controller.reverse();
+        Future.delayed(const Duration(milliseconds: 260), (){
+          if(context.mounted) Navigator.pop(context);
+        });
       },
       child: Dialog(
-        child: ScaleTransition(
-          scale: scaleVal,
-          child: ClipRRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-              child: Container(
-                width: screenWidth * 0.8,
-              height: 300,
-              clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(32), color: DeviceUtils.isDarkMode(context) ? Theme.of(context).colorScheme.secondary.withOpacity(0.75) : Theme.of(context).colorScheme.secondary.withOpacity(0.75)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    CustomButton1(width: screenWidth * 0.7, text: "Easy", onpressed: (){
-                      Provider.of<DeviceProvider>(context, listen: false).changeChallengeType(changeTo: 'E');
-                      Navigator.pop(context);
-                      DeviceUtils.showFlushBar(context, "Now playing in Easy Mode");
-                    },),
-                    CustomButton1(width: screenWidth * 0.7, text: "Medium", onpressed: (){
-                      Provider.of<DeviceProvider>(context, listen: false).changeChallengeType(changeTo: 'M');
-                      Navigator.pop(context);
-                      DeviceUtils.showFlushBar(context, "Now playing in Medium Mode");
-                    },),
-                    CustomButton1(width: screenWidth * 0.7, text: "Hard", onpressed: (){
-                      Provider.of<DeviceProvider>(context, listen: false).changeChallengeType(changeTo: 'H');
-                      Navigator.pop(context);
-                      DeviceUtils.showFlushBar(context, "Now playing in Difficult Mode");
-                    },),
-              
-                  ],
+        child: FadeTransition(
+          opacity: scaleVal,
+          child: ScaleTransition(
+            scale: scaleVal,
+            child: ClipRRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                child: Container(
+                  width: screenWidth * 0.8,
+                height: 300,
+                clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(32), color: DeviceUtils.isDarkMode(context) ? Theme.of(context).colorScheme.secondary.withOpacity(0.75) : Theme.of(context).colorScheme.secondary.withOpacity(0.75)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      CustomButton1(width: screenWidth * 0.7, text: "Easy", onpressed: (){
+                        Provider.of<DeviceProvider>(context, listen: false).changeChallengeType(changeTo: 'E');
+                        Navigator.pop(context);
+                        DeviceUtils.showFlushBar(context, "Now playing in Easy Mode");
+                      },),
+                      CustomButton1(width: screenWidth * 0.7, text: "Medium", onpressed: (){
+                        Provider.of<DeviceProvider>(context, listen: false).changeChallengeType(changeTo: 'M');
+                        Navigator.pop(context);
+                        DeviceUtils.showFlushBar(context, "Now playing in Medium Mode");
+                      },),
+                      CustomButton1(width: screenWidth * 0.7, text: "Hard", onpressed: (){
+                        Provider.of<DeviceProvider>(context, listen: false).changeChallengeType(changeTo: 'H');
+                        Navigator.pop(context);
+                        DeviceUtils.showFlushBar(context, "Now playing in Difficult Mode");
+                      },),
+                
+                    ],
+                  ),
                 ),
               ),
             ),

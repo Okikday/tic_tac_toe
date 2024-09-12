@@ -9,7 +9,7 @@ class TicTacToeText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(8, 4, 8,4),
+      padding: const EdgeInsets.fromLTRB(8, 4, 8,4),
       decoration: BoxDecoration(
         
          borderRadius: BorderRadius.circular(48),),

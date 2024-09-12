@@ -1,14 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/app.dart';
 import 'package:tic_tac_toe/common/styles/colors.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/common/widgets/custom_alert_dialog.dart';
-import 'package:tic_tac_toe/data/shared_prefs_data_1.dart';
 import 'package:tic_tac_toe/services/online_play.dart';
-import 'package:tic_tac_toe/services/providers/device_provider.dart';
 import 'package:tic_tac_toe/services/providers/online_provider.dart';
 import 'package:tic_tac_toe/views/gameplay/game_widgets/progress_trackboard.dart';
 import 'package:tic_tac_toe/views/gameplay/online_widgets/online_gridboard_3_by_3.dart';
@@ -62,16 +60,17 @@ class _LaunchGameOnlinePlayState extends State<LaunchGameOnlinePlay> {
               showDialog(context: context, builder: (context) => CustomAlertDialog(title: "End game?",
                 actions: [
                 MaterialButton(onPressed: (){
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 }, child: Text("Cancel"),),
                 MaterialButton(
                   color: MyColors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(36)),
                   onPressed: (){
-                  final String userID = Provider.of<DeviceProvider>(context, listen: false).userId;
-                  final String gameplayID = Provider.of<OnlineProvider>(context, listen: false).currentOnlineGameplayID;
-                  OnlinePlay(context).endOnlineGame(userID, gameplayID);
-                }, child: Text("End Game"),),
+                  final String gameplayID = Provider.of<OnlineProvider>(navigatorKey.currentContext!, listen: false).currentOnlineGameplayID;
+                  OnlinePlay().endOnlineGame(gameplayID);
+                  
+                }, child: MyText().small(context, "End game", color: Colors.black), 
+                ),
               ]));
             }, icon: Icon(Icons.cancel_rounded, size: 36, color: Colors.red,),),
             ProgressTrackboard(),

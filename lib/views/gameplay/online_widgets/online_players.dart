@@ -3,6 +3,7 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/app.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/services/online_play.dart';
 import 'package:tic_tac_toe/services/online_task_scheduler.dart';
@@ -49,7 +50,7 @@ class _OnlinePlayersState extends State<OnlinePlayers> with SingleTickerProvider
         debugPrint("Running online task function");
         OnlineTaskScheduler().runOnlineTask(context, () {
           if (context.mounted) {
-            OnlinePlay(context).checkWaitingAccepted(myUID: Provider.of<DeviceProvider>(context, listen: false).userId);
+            OnlinePlay().checkWaitingAccepted(myUID: Provider.of<DeviceProvider>(context, listen: false).userId);
           }
         });
       }

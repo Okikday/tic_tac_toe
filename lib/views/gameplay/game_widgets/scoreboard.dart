@@ -25,9 +25,14 @@ class _ScoreboardState extends State<Scoreboard> with SingleTickerProviderStateM
   late Animation<double> val;
   @override
   void initState() {
+    
+    
     controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     val = Tween<double>(begin: 1.1, end: 1).animate(controller);
+    WidgetsBinding.instance.addPostFrameCallback((_){
+     
     Future.delayed(const Duration(milliseconds: 25), () => controller.forward());
+    });
     super.initState();
   }
 

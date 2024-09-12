@@ -150,18 +150,18 @@ class _GameResultDialogState extends State<GameResultDialog>
                                 final int gridType = Provider.of<DeviceProvider>(context,listen: false).gridType;
                                 if (gridType == 3) {
                                   Provider.of<GameProvider3by3>(context, listen: false).resetGamePlay(context);
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
                                 }
                                 if (gridType == 4) {
                                   Provider.of<GameProvider4by4>(context, listen: false).resetGamePlay(context);
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
                                 }
                                 if (gridType == 5) {
                                   Provider.of<GameProvider5by5>(context, listen: false).resetGamePlay(context);
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
                                 }
                               },
                               style: ElevatedButton.styleFrom(
@@ -186,7 +186,7 @@ class _GameResultDialogState extends State<GameResultDialog>
                                   controller.reverse();
                                   Future.delayed(const Duration(milliseconds: 360,), () {
                                     if(context.mounted){
-                                      Navigator.pop(context);
+                                      Navigator.of(context).pop();
                                       Provider.of<GameProvider3by3>(context,listen: false).playGame(context);
                                     }
                                   });
@@ -197,7 +197,7 @@ class _GameResultDialogState extends State<GameResultDialog>
                                   controller.reverse();
                                   Future.delayed(const Duration(milliseconds: 360,), () {
                                     if(context.mounted){
-                                      Navigator.pop(context);
+                                      Navigator.of(context).pop();
                                       Provider.of<GameProvider4by4>(context,listen: false).playGame(context);
                                     }
                                   });
@@ -207,7 +207,7 @@ class _GameResultDialogState extends State<GameResultDialog>
                                   controller.reverse();
                                   Future.delayed(const Duration(milliseconds: 360,), () {
                                     if(context.mounted){
-                                      Navigator.pop(context);
+                                      Navigator.of(context).pop();
                                       Provider.of<GameProvider5by5>(context,listen: false).playGame(context);
                                     }
                                   });

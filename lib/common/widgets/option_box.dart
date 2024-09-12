@@ -1,7 +1,5 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:tic_tac_toe/common/styles/constants.dart';
 
 class OptionBox extends StatefulWidget {
   final Widget? child;
@@ -24,7 +22,7 @@ class _OptionBoxState extends State<OptionBox> with SingleTickerProviderStateMix
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 100));
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 100));
     scaleVal = Tween<double>(begin: 1, end: 0.75,).animate(controller);
     controller.addListener(listener);
   }
@@ -36,8 +34,10 @@ class _OptionBoxState extends State<OptionBox> with SingleTickerProviderStateMix
   }
   @override
   void dispose() {
-    super.dispose();
     controller.dispose();
+    super.dispose();
+    
+    
 
   }
   @override

@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/app.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/services/providers/device_provider.dart';
 import 'package:tic_tac_toe/services/online_play.dart';
@@ -47,7 +48,7 @@ class _SendRequestPopUpState extends State<SendRequestPopUp> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = DeviceUtils.getScreenWidth(context);
+    DeviceUtils.getScreenWidth(context);
     return ScaleTransition(
       scale: scaleVal,
       child: Dialog(
@@ -131,10 +132,10 @@ class _SendRequestPopUpState extends State<SendRequestPopUp> with SingleTickerPr
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        MaterialButton(onPressed: (){controller.reverse(); Navigator.pop(context);}, child: MyText().small(context, "Cancel", adjust: -1), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),), color: Colors.red,),
+                        MaterialButton(onPressed: (){controller.reverse(); Navigator.of(context).pop();}, child: MyText().small(context, "Cancel", adjust: -1), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),), color: Colors.red,),
                         MaterialButton(onPressed: (){
-                          OnlinePlay(context).requestGamePlay(myUID: Provider.of<DeviceProvider>(context, listen: false).userId, otherPlayerUID: widget.otherPlayerID ?? "", choice: playAsX == true ? 'X' : 'O');
-                          Navigator.pop(context);
+                          OnlinePlay().requestGamePlay(myUID: Provider.of<DeviceProvider>(context, listen: false).userId, otherPlayerUID: widget.otherPlayerID ?? "", choice: playAsX == true ? 'X' : 'O');
+                          Navigator.of(context).pop();
                         }, child: MyText().small(context, "Request Gameplay", adjust: -1), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),), color: Colors.green,)
                       ],
                     ),

@@ -18,12 +18,16 @@ class _ProgressTrackboardState extends State<ProgressTrackboard>
 
   @override
   void initState() {
-    super.initState();
+    
     controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
     val = Tween<double>(begin: 1.05, end: 1).animate(controller);
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      
     
     // Start initial animation
     Future.delayed(const Duration(milliseconds: 250), () => controller.forward());
+    });
+    super.initState();
   }
 
   @override

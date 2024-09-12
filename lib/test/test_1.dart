@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/app.dart';
 import 'package:tic_tac_toe/services/online_play.dart';
 
 class Test1 extends StatelessWidget {
@@ -9,7 +10,7 @@ class Test1 extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: MaterialButton(onPressed: (){
-          OnlinePlay(context).requestGamePlay(myUID: "myUID", otherPlayerUID: "anonymous");
+          OnlinePlay().requestGamePlay(myUID: "myUID", otherPlayerUID: "anonymous");
         }, child: Text("Request gameplay",),
         )
       ),

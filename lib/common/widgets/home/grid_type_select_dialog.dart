@@ -1,9 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:tic_tac_toe/common/widgets/checkmark_anim.dart';
 import 'package:tic_tac_toe/services/providers/device_provider.dart';
 import 'package:tic_tac_toe/services/providers/game_provider_3_by_3.dart';
 import 'package:tic_tac_toe/services/providers/game_provider_4_by_4.dart';
@@ -37,7 +35,7 @@ class _GridTypeSelectDialogState extends State<GridTypeSelectDialog>
       duration: const Duration(milliseconds: 350),
     );
 
-    scaleVal = Tween<double>(begin: 0.1, end: 1).animate(controller);
+    scaleVal = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: controller, curve: Curves.decelerate));
     controller.forward();
   }
 
@@ -50,12 +48,14 @@ class _GridTypeSelectDialogState extends State<GridTypeSelectDialog>
   @override
   Widget build(BuildContext context) {
     final double screenWidth = DeviceUtils.getScreenWidth(context);
-    final double screenHeight = DeviceUtils.getScreenHeight(context);
 
     return PopScope(
-      canPop: true,
+      canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         controller.reverse();
+        Future.delayed(const Duration(milliseconds: 360), (){
+          if(context.mounted) Navigator.pop(context);
+        });
       },
       child: Dialog(
         child: ScaleTransition(

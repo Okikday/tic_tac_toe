@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/app.dart';
 import 'package:tic_tac_toe/common/styles/colors.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/services/online_play.dart';
@@ -16,7 +17,6 @@ class RequestsToPlayOnline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String myUID = Provider.of<DeviceProvider>(context, listen: false).userId;
     final List<dynamic> requestsList = requests.keys.toList();
 
     return Scaffold(
@@ -142,7 +142,7 @@ class _PlayerRequestsListTileState extends State<PlayerRequestsListTile> with Si
                   onPressed: () async {
                     //On rejection
                     final String uid = Provider.of<DeviceProvider>(context, listen: false).userId;
-                    OnlinePlay(context).rejectGameplay(widget.gameplayID, widget.otherPlayerID, uid);
+                    OnlinePlay().rejectGameplay(widget.gameplayID, widget.otherPlayerID, uid);
                     if (context.mounted) {
                       DeviceUtils.showFlushBar(context, "You rejected a gameplay with ${widget.userName}");
                     }
@@ -156,7 +156,7 @@ class _PlayerRequestsListTileState extends State<PlayerRequestsListTile> with Si
                 IconButton(
                   onPressed: () async {
                     //On acceptance
-                    OnlinePlay(context).acceptGameplay(gameplayID: widget.gameplayID);
+                    OnlinePlay().acceptGameplay(gameplayID: widget.gameplayID);
                   },
                   icon: const Icon(
                     Icons.check_circle_outlined,

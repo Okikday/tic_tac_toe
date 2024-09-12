@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tic_tac_toe/common/styles/colors.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 
 class CustomAlertDialog extends StatelessWidget {

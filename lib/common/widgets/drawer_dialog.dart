@@ -24,8 +24,8 @@ class _DrawerDialogState extends State<DrawerDialog> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 350));
-    scaleVal = Tween<double>(begin: 1.2, end: 1,).animate(controller);
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
+    scaleVal = Tween<double>(begin: 0, end: 1,).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
     controller.forward();
 
     
@@ -41,95 +41,100 @@ class _DrawerDialogState extends State<DrawerDialog> with SingleTickerProviderSt
     final double screenHeight = DeviceUtils.getScreenHeight(context);
     final double screenWidth = DeviceUtils.getScreenWidth(context);
     return PopScope(
-      canPop: true,
+      canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         controller.reverse();
-        
+        Future.delayed(const Duration(milliseconds: 410), (){
+          if(context.mounted) Navigator.of(context).pop();
+        });
       },
-      child: ScaleTransition(
-        scale: scaleVal,
+      child: FadeTransition(
+        opacity: scaleVal,
         child: Dialog(
           
-          child: Container(
-            padding: const EdgeInsets.all(2.5),
-            decoration: BoxDecoration(
-          border: Border.all(
-            color: const Color.fromARGB(255, 201, 164, 209).withOpacity(0.75), 
-            width: 1.5,
-          ),
-          borderRadius: BorderRadius.circular(40),
+          child: ScaleTransition(
+            scale: scaleVal,
+            child: Container(
+              padding: const EdgeInsets.all(2.5),
+              decoration: BoxDecoration(
+            border: Border.all(
+              color: const Color.fromARGB(255, 201, 164, 209).withOpacity(0.75), 
+              width: 1.5,
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(36),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                child: Container(
-                  color: DeviceUtils.isDarkMode(context) ? Theme.of(context).colorScheme.secondary.withOpacity(0.25) : Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(40),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(36),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
                   child: Container(
-                    padding: const EdgeInsets.all(24),
-                  width: screenWidth * 0.9,
-                  height: screenHeight * 0.6,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(36),
-                        gradient: LinearGradient(
-                              colors: [
-                                const Color.fromARGB(255, 201, 164, 209).withOpacity(0.25), // Lighter purple
-                                const Color.fromARGB(255, 245, 245, 220).withOpacity(0.4),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                  ),
-                  child: Column(
-
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Divider(height: 2, color: const Color.fromARGB(255, 245, 245, 220).withOpacity(0.4),),
-                      //Home
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                        CircleBox1(child: const Icon(Icons.home_rounded, size: 28,), onpressed: () => Navigator.pop(context),),
-                        RectangularBoxIn(
-                          onpressed: () => Navigator.pop(context),
-                          child: Text("Home", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
-                      ],),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          CircleBox1(child: const Icon(Icons.cancel_outlined, size: 28,), onpressed: () => resetElementAction(context),),
+                    color: DeviceUtils.isDarkMode(context) ? Theme.of(context).colorScheme.secondary.withOpacity(0.25) : Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                    width: screenWidth * 0.9,
+                    height: screenHeight * 0.6,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(36),
+                          gradient: LinearGradient(
+                                colors: [
+                                  const Color.fromARGB(255, 201, 164, 209).withOpacity(0.25), // Lighter purple
+                                  const Color.fromARGB(255, 245, 245, 220).withOpacity(0.4),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                    ),
+                    child: Column(
+                  
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Divider(height: 2, color: const Color.fromARGB(255, 245, 245, 220).withOpacity(0.4),),
+                        //Home
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                          CircleBox1(child: const Icon(Icons.home_rounded, size: 28,), onpressed: () => Navigator.pop(context),),
                           RectangularBoxIn(
-                            onpressed: () => resetElementAction(context),
-                            child: Text("Reset", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
+                            onpressed: () => Navigator.pop(context),
+                            child: Text("Home", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
                         ],),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                        const CircleBox1(child: Icon(Icons.person_rounded, size: 28,),),
-                        RectangularBoxIn(child: Text("Profile", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
-                      ],),
                   
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                        const CircleBox1(child: Icon(Icons.settings_rounded, size: 28,),),
-                        RectangularBoxIn(child: Text("Settings", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
-                      ],),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CircleBox1(child: const Icon(Icons.cancel_outlined, size: 28,), onpressed: () => resetElementAction(context),),
+                            RectangularBoxIn(
+                              onpressed: () => resetElementAction(context),
+                              child: Text("Reset", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
+                          ],),
                   
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                        const CircleBox1(child: Icon(Icons.info_rounded, size: 28,),),
-                        RectangularBoxIn(child: Text("About", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
-                      ],),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                          const CircleBox1(child: Icon(Icons.person_rounded, size: 28,),),
+                          RectangularBoxIn(child: Text("Profile", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
+                        ],),
                     
-                      Divider(height: 2, color: const Color.fromARGB(255, 245, 245, 220).withOpacity(0.4),),
-                    ],
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                          const CircleBox1(child: Icon(Icons.settings_rounded, size: 28,),),
+                          RectangularBoxIn(child: Text("Settings", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
+                        ],),
+                    
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                          const CircleBox1(child: Icon(Icons.info_rounded, size: 28,),),
+                          RectangularBoxIn(child: Text("About", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: Constants.medium),),)
+                        ],),
+                      
+                        Divider(height: 2, color: const Color.fromARGB(255, 245, 245, 220).withOpacity(0.4),),
+                      ],
+                    ),
+                        ),
                   ),
-                      ),
                 ),
               ),
             ),
@@ -148,7 +153,7 @@ class _DrawerDialogState extends State<DrawerDialog> with SingleTickerProviderSt
     if(Provider.of<DeviceProvider>(context,  listen: false).gridType == 5){
      Provider.of<GameProvider5by5>(context, listen: false).resetGamePlay(context);
     }
-    Navigator.pop(context);
+    Navigator.of(context).pop();
   }
 }
 

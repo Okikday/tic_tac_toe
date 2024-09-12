@@ -168,7 +168,7 @@ class _SignUpState extends State<SignUp> {
 
   void signUpButtonAction(context) async {
   if (nameText.length < 3 || email.length < 8 || password.length < 4) {
-    Fluttertoast.showToast(msg: "Properly fill up the details!");
+    Fluttertoast.showToast(msg: "Properly fill in the details!");
   } else {
 
     setState(() => isLoadingVisible = true);
@@ -183,12 +183,12 @@ void signInWithGoogleButtonAction(context)async{
   if(outcomeSignInGoogle == null){
     Fluttertoast.showToast(msg: "Successfully signed up");
     canPop = true;
-    Navigator.pop(context);
+    Navigator.of(context).pop();
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OnlinePlayers()));
     if(context.mounted) showDialog(context: context, builder: (context) => const CheckmarkAnim(text: "You successfully logged in with Google", duration: 1500,));
   }else{
     canPop = true;
-    Navigator.pop(context);
+    Navigator.of(context).pop();
     Fluttertoast.showToast(msg: outcomeSignInGoogle);
   }
 

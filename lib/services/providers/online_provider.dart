@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/app.dart';
 import 'package:tic_tac_toe/common/widgets/loading_dialog.dart';
 import 'package:tic_tac_toe/data/shared_prefs_data_1.dart';
 import 'package:tic_tac_toe/models/gameplay.dart';
@@ -33,15 +34,15 @@ class OnlineProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateGameplayList(List<dynamic> gameplayList) {
-    _gameplayList = gameplayList;
+  void updateGameplayList(List<dynamic> list) {
+    _gameplayList = list;
     _boardTexts = [];
     for (int i = 0; i < _gameplayList.length; i++) {
-      if (gameplayList[i] == null || gameplayList[i] == "null") {
+      if (list[i] == null || list[i] == "null") {
         _boardTexts.add(null);
-      } else if (gameplayList[i] == 0 || gameplayList[i] == "0") {
+      } else if (list[i] == 0 || list[i] == "0") {
         _boardTexts.add("O");
-      } else if (gameplayList[i] == 1 || gameplayList[i] == "1") {
+      } else if (list[i] == 1 || list[i] == "1") {
         _boardTexts.add("X");
       }
     }
@@ -66,7 +67,9 @@ class OnlineProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setPlayingAs(String playingAs) {}
+  void setPlayingAs(String value) {
+    _playingAs = value;
+  }
 
   void setOtherPlayerScore(int otherPlayerScore) {
     score2 = otherPlayerScore;
@@ -79,8 +82,12 @@ class OnlineProvider extends ChangeNotifier {
   }
 
   void endOnlineGameSession() {
-    _gameplayList = [];
-    _boardTexts = [];
+    final List<dynamic> resetList = [];
+      for (int i = 0; i < SharedPrefsData1.defaultGameplayListGrid3.length; i++){
+        resetList.add(null);
+      }
+
+    updateGameplayList(resetList);
     score1 = 0;
     score2 = 0;
     _userChoice = '';
@@ -90,8 +97,12 @@ class OnlineProvider extends ChangeNotifier {
   }
 
   void resetGameSession() {
-    _gameplayList = [];
-    _boardTexts = [];
+    final List<dynamic> resetList = [];
+      for (int i = 0; i < SharedPrefsData1.defaultGameplayListGrid3.length; i++){
+        resetList.add(null);
+      }
+
+    updateGameplayList(resetList);
     _count = 0;
     notifyListeners();
   }
@@ -118,9 +129,9 @@ class OnlineProvider extends ChangeNotifier {
       final DatabaseReference dbReference = FirebaseDatabase.instance.ref('gameSessions/$currentOnlineGameplayID/gameplayList');
       await dbReference.update({"$index": "1"});
       updateGameplayList(_gameplayList);
-      if (context.mounted) {
-        checkGameplay(context);
-        onlineLoadGame(context);
+      if (navigatorKey.currentContext!.mounted) {
+        checkGameplay(navigatorKey.currentContext!);
+        onlineLoadGame(navigatorKey.currentContext!);
       }
       
       }
@@ -134,9 +145,9 @@ class OnlineProvider extends ChangeNotifier {
       final DatabaseReference dbReference = FirebaseDatabase.instance.ref('gameSessions/$currentOnlineGameplayID/gameplayList');
       await dbReference.update({"$index": "0"});
       updateGameplayList(_gameplayList);
-      if (context.mounted) {
-        checkGameplay(context);
-        onlineLoadGame(context);
+      if (navigatorKey.currentContext!.mounted) {
+        checkGameplay(navigatorKey.currentContext!);
+        onlineLoadGame(navigatorKey.currentContext!);
       }
       }
     }
@@ -145,7 +156,6 @@ class OnlineProvider extends ChangeNotifier {
   }
 
   void onlineLoadGame(BuildContext context){
-    print("Online load game");
     DatabaseReference dbReference = gameSessionRef.child(currentOnlineGameplayID);
     dbReference.child("currentWinBy").onValue.drain();
     dbReference.child("endedSession").onValue.drain();
@@ -170,14 +180,14 @@ class OnlineProvider extends ChangeNotifier {
       final String otherPlayerPlayingAs = _playingAs == "player1" ? "player2" : "player1";
 
       if (event.snapshot.value == otherPlayerPlayingAs) {
-        if (context.mounted) showDialog(context: context, builder: (context) => const LoadingDialog(canPop: false));
+        if (navigatorKey.currentContext!.mounted) showDialog(context: navigatorKey.currentContext!, builder: (context) => const LoadingDialog(canPop: false));
         final DataSnapshot dataSnapshot = await dbReference.child(otherPlayerPlayingAs).get();
         final Map<dynamic, dynamic>? otherUserDataMap = dataSnapshot.value as Map<dynamic, dynamic>?;
         if (otherUserDataMap != null) {
-          if (context.mounted) {
-            Navigator.pop(context);
+          if (navigatorKey.currentContext!.mounted) {
+            Navigator.pop(navigatorKey.currentContext!);
             showDialog(
-                context: context,
+                context: navigatorKey.currentContext!,
                 builder: (context) => OnlineGameResultDialog(
                     message: "You lose, Cry more 😜", otherPlayerName: otherUserDataMap["userName"], otherPlayerPhotoURL: otherUserDataMap["photoURL"]));
           }
@@ -186,7 +196,7 @@ class OnlineProvider extends ChangeNotifier {
           
         }
       }else if(event.snapshot.value == "none" && _count == 9){
-        if (context.mounted) showDialog(context: context, builder: (context) => const LoadingDialog(canPop: false));
+        if (navigatorKey.currentContext!.mounted) showDialog(context: navigatorKey.currentContext!, builder: (context) => const LoadingDialog(canPop: false));
 
         final Map<String, String> resetList = {for (int i = 0; i < SharedPrefsData1.defaultGameplayListGrid3.length; i++) i.toString(): SharedPrefsData1.defaultGameplayListGrid3[i].toString()};
         await dbReference.child("gameplayList").update({
@@ -195,10 +205,10 @@ class OnlineProvider extends ChangeNotifier {
         final DataSnapshot dataSnapshot = await dbReference.child(otherPlayerPlayingAs).get();
         final Map<dynamic, dynamic>? otherUserDataMap = dataSnapshot.value as Map<dynamic, dynamic>?;
         if (otherUserDataMap != null) {
-          if (context.mounted) {
-            Navigator.pop(context);
+          if (navigatorKey.currentContext!.mounted) {
+            Navigator.pop(navigatorKey.currentContext!);
             showDialog(
-                context: context,
+                context: navigatorKey.currentContext!,
                 builder: (context) => OnlineGameResultDialog(
                     message: "No one won", otherPlayerName: otherUserDataMap["userName"], otherPlayerPhotoURL: otherUserDataMap["photoURL"]));
           }
@@ -206,16 +216,15 @@ class OnlineProvider extends ChangeNotifier {
         dbReference.child("currentWinBy").onValue.listen((DatabaseEvent event) {
           if(otherUserDataMap != null){
             if (event.snapshot.value == "newSession") {
-            if(context.mounted){
-              Navigator.pop(context);
+            _gameplayList = SharedPrefsData1.defaultGameplayListGrid3;
+            Navigator.of(navigatorKey.currentContext!).pop();
             DeviceUtils.pushMaterialPage(
-                context,
+                navigatorKey.currentContext!,
                 LaunchGameOnlinePlay(
                     gridType: 3,
                     gameplayID: currentOnlineGameplayID,
                     otherPlayerPhotoURL: otherUserDataMap["photoURL"],
                     otherPlayerName: otherUserDataMap["userName"]));
-            }
           }
           }
         });
@@ -223,23 +232,11 @@ class OnlineProvider extends ChangeNotifier {
       notifyListeners();
     });
 
-    dbReference.child("endedSession").onValue.listen((DatabaseEvent event) async{
-      if(event.snapshot.value == true && context.mounted){
-        Navigator.pop(context);
-        DeviceUtils.showFlushBar(context, "Game session ended by other user");
-        await dbReference.remove();
-        
-        if (context.mounted) {
-          final String userID = Provider.of<DeviceProvider>(context, listen: false).userId;
-  if (playingAs == "player1") {
-    FirebaseDatabase.instance.ref("onlinePlayers/$userID/sentRequests/$currentOnlineGameplayID").remove();
-  } else if (playingAs == "player2") {
-    FirebaseDatabase.instance.ref("onlinePlayers/$userID/requests/$currentOnlineGameplayID").remove();
-  }
-}
-      }
+    dbReference.child("endedSession").onValue.listen((DatabaseEvent event) async {
+     //if detects ended Session
       notifyListeners();
     });
+
 
     
   }
@@ -247,6 +244,10 @@ class OnlineProvider extends ChangeNotifier {
   void checkGameplay(BuildContext context,) async {
     print("gameplayList: $_gameplayList");
     final List<int?> newGameList = [];
+
+    for(int i = 0; i < _gameplayList.length; i++){
+      newGameList.add(null);
+    }
 
     for (int i = 0; i < _gameplayList.length; i++) {
       if (_gameplayList[i] == "0" || _gameplayList[i] == 0) {
@@ -257,12 +258,11 @@ class OnlineProvider extends ChangeNotifier {
         newGameList[i] = null;
       }
     }
-
-
-    print("$newGameList");
+    countGameplayList();
     final int? winVal = Gameplay().checkWinnerGrid3(newGameList, _count);
     if (winVal == 0) {
-      if(context.mounted) showDialog(context: context, builder: (context) => const LoadingDialog(canPop: false));
+      
+      showDialog(context: navigatorKey.currentContext!, builder: (context) => const LoadingDialog(canPop: false));
       final String otherPlayerPlayingAs = _playingAs == "player1" ? "player2" : "player1";
       final DataSnapshot dataSnapshot = await gameSessionRef.child("$_currentOnlineGameplayID/$otherPlayerPlayingAs").get();
       final Map<dynamic, dynamic>? otherUserDataMap = dataSnapshot.value as Map<dynamic, dynamic>?;
@@ -271,22 +271,23 @@ class OnlineProvider extends ChangeNotifier {
         if (_userChoice == "O") {
           await gameSessionRef.child("$currentOnlineGameplayID/score/$_playingAs").set(++score1);
           await gameSessionRef.child("$currentOnlineGameplayID/currentWinBy").set(_playingAs);
-         if(context.mounted){
-          Navigator.pop(context);
+         if(navigatorKey.currentContext!.mounted){
+          Navigator.pop(navigatorKey.currentContext!);
            showDialog(
-              context: context,
+              context: navigatorKey.currentContext!,
               builder: (context) =>
                   OnlineGameResultDialog(
                     message: "You win", 
                     otherPlayerName: otherUserDataMap["userName"], 
                     otherPlayerPhotoURL: otherUserDataMap["photoURL"]));
          }
+         _gameplayList = SharedPrefsData1.defaultGameplayListGrid3;
         
         }
       }
     }
     if (winVal == 1) {
-       if(context.mounted) showDialog(context: context, builder: (context) => const LoadingDialog(canPop: false));
+       showDialog(context: navigatorKey.currentContext!, builder: (context) => const LoadingDialog(canPop: false));
       final String otherPlayerPlayingAs = _playingAs == "player1" ? "player2" : "player1";
       final DataSnapshot dataSnapshot = await gameSessionRef.child("$_currentOnlineGameplayID/$otherPlayerPlayingAs").get();
       final Map<dynamic, dynamic>? otherUserDataMap = dataSnapshot.value as Map<dynamic, dynamic>?;
@@ -295,38 +296,40 @@ class OnlineProvider extends ChangeNotifier {
         if (_userChoice == "X") {
           await gameSessionRef.child("$currentOnlineGameplayID/score/$_playingAs").set(++score1);
           await gameSessionRef.child("$currentOnlineGameplayID/currentWinBy").set(_playingAs);
-         if(context.mounted){
-          Navigator.pop(context);
+         if(navigatorKey.currentContext!.mounted){
+          Navigator.pop(navigatorKey.currentContext!);
            showDialog(
-              context: context,
+              context: navigatorKey.currentContext!,
               builder: (context) =>
                   OnlineGameResultDialog(
                     message: "You win", 
                     otherPlayerName: otherUserDataMap["userName"], 
                     otherPlayerPhotoURL: otherUserDataMap["photoURL"]));
          }
+         _gameplayList = SharedPrefsData1.defaultGameplayListGrid3;
         
         }
       }
     }
     if (winVal == null && _count == _gameplayList.length) {
-       if(context.mounted) showDialog(context: context, builder: (context) => const LoadingDialog(canPop: false));
+      
+       showDialog(context: navigatorKey.currentContext!, builder: (context) => const LoadingDialog(canPop: false));
       final String otherPlayerPlayingAs = _playingAs == "player1" ? "player2" : "player1";
       final DataSnapshot dataSnapshot = await gameSessionRef.child("$_currentOnlineGameplayID/$otherPlayerPlayingAs").get();
       final Map<dynamic, dynamic>? otherUserDataMap = dataSnapshot.value as Map<dynamic, dynamic>?;
-      
+      print("$otherUserDataMap");
       if (otherUserDataMap != null) {
          await gameSessionRef.child("$currentOnlineGameplayID/currentWinBy").set("none");
-        if(context.mounted){
-          Navigator.pop(context);
-           showDialog(
-              context: context,
+
+         Navigator.pop(navigatorKey.currentContext!);
+          showDialog(
+              context: navigatorKey.currentContext!,
               builder: (context) =>
                   OnlineGameResultDialog(
                     message: "No one wins 💀🗿",
                     otherPlayerName: otherUserDataMap["userName"], 
                     otherPlayerPhotoURL: otherUserDataMap["photoURL"]));
-         }
+         _gameplayList = SharedPrefsData1.defaultGameplayListGrid3;
       }
     }
     notifyListeners();

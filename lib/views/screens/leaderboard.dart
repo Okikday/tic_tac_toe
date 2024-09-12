@@ -22,7 +22,7 @@ class Leaderboard extends StatelessWidget {
           children: [
             Text("Leaderboards", style: TextStyle(fontSize: Constants.big),),
             Constants.whiteSpaceVertical(36),
-            LeaderboardBox()
+            const LeaderboardBox()
             
           ],
         ),
@@ -37,7 +37,7 @@ class LeaderboardBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   final double screenWidth = DeviceUtils.getScreenWidth(context);
+   DeviceUtils.getScreenWidth(context);
     return Container(
       width: 320,
       height: 72,

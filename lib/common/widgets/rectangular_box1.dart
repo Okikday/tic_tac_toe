@@ -28,7 +28,7 @@ class _RectangularBox1State extends State<RectangularBox1> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 100));
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 100));
     scaleVal = Tween<double>(begin: 1, end: 0.9,).animate(controller);
     controller.addListener(listener);
   }
@@ -52,7 +52,7 @@ class _RectangularBox1State extends State<RectangularBox1> with SingleTickerProv
       scale: scaleVal,
       child: MaterialButton(
         onPressed: (){},
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
         child: GestureDetector(
           onTapDown: (details){

@@ -52,7 +52,7 @@ class _SignInState extends State<SignIn> {
             .copyWith(color: Theme.of(context).colorScheme.primary),
       ),
       body: Padding(
-        padding: EdgeInsets.only(left: 24, right: 24),
+        padding: const EdgeInsets.only(left: 24, right: 24),
         child: Column(
           children: [
             Constants.whiteSpaceVertical(24),
@@ -147,7 +147,7 @@ class _SignInState extends State<SignIn> {
             
             Provider.of<DeviceProvider>(context, listen: false).saveUserDetails(outcomeGetUserData['name'], email, outcomeGetUserData['id'], outcomeGetUserData['photoURL']);
             setState(()=>isLoadingVisible = false);
-            Navigator.pop(context);
+            Navigator.of(context).pop();
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OnlinePlayers()));
             Fluttertoast.showToast(msg: "Successfully Logged in!");
             if(context.mounted) showDialog(context: context, builder: (context) => const CheckmarkAnim(text: "You successfully logged in", duration: 1500,));

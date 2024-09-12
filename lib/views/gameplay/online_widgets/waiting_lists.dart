@@ -1,23 +1,22 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/app.dart';
 import 'package:tic_tac_toe/common/styles/colors.dart';
 import 'package:tic_tac_toe/common/styles/constants.dart';
 import 'package:tic_tac_toe/services/online_play.dart';
 import 'package:tic_tac_toe/services/providers/device_provider.dart';
-import 'package:tic_tac_toe/utils/device_utils.dart';
 
-class RequestsToPlayOnline extends StatelessWidget {
-  final Map<dynamic, dynamic> requests;
-  const RequestsToPlayOnline({
+class WaitingListsToPlayOnline extends StatelessWidget {
+  final Map<dynamic, dynamic> sentRequests;
+  const WaitingListsToPlayOnline({
     super.key,
-    required this.requests,
+    required this.sentRequests,
   });
 
   @override
   Widget build(BuildContext context) {
-    final String myUID = Provider.of<DeviceProvider>(context, listen: false).userId;
-    final List<dynamic> requestsList = requests.keys.toList();
+    final List<dynamic> requestsList = sentRequests.keys.toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -31,20 +30,20 @@ class RequestsToPlayOnline extends StatelessWidget {
           String requestKey = requestsList[index];
 
           return StreamBuilder(
-            stream: FirebaseDatabase.instance.ref('gameSessions/$requestKey/player1').onValue,
+            stream: FirebaseDatabase.instance.ref('gameSessions/$requestKey/player2').onValue,
             builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasData && snapshot.data!.snapshot.exists) {
-                Map<dynamic, dynamic>? player1Data = snapshot.data!.snapshot.value as Map<dynamic, dynamic>?;
+                Map<dynamic, dynamic>? player2Data = snapshot.data!.snapshot.value as Map<dynamic, dynamic>?;
 
-                if (player1Data != null) {
-                  return PlayerRequestsListTile(
-                    userName: player1Data["userName"],
-                    photoURL: player1Data["photoURL"],
+                if (player2Data != null) {
+                  return PlayerWaitingForAcceptanceOfGameplay(
+                    userName: player2Data["userName"],
+                    photoURL: player2Data["photoURL"],
                     gameplayID: requestKey,
-                    status: player1Data["status"],
-                    otherPlayerID: player1Data["uid"],
+                    status: player2Data["status"],
+                    otherPlayerID: player2Data["uid"],
                   );
                 } else {
                   return const ListTile(
@@ -66,14 +65,14 @@ class RequestsToPlayOnline extends StatelessWidget {
 
 
 
-class PlayerRequestsListTile extends StatefulWidget {
+class PlayerWaitingForAcceptanceOfGameplay extends StatefulWidget {
   final String userName;
   final String photoURL;
   final String gameplayID;
   final String status;
   final String otherPlayerID;
 
-  const PlayerRequestsListTile({
+  const PlayerWaitingForAcceptanceOfGameplay({
     super.key,
     required this.userName,
     required this.photoURL,
@@ -83,10 +82,10 @@ class PlayerRequestsListTile extends StatefulWidget {
   });
 
   @override
-  State<PlayerRequestsListTile> createState() => _PlayerRequestsListTileState();
+  State<PlayerWaitingForAcceptanceOfGameplay> createState() => _PlayerWaitingForAcceptanceOfGameplayState();
 }
 
-class _PlayerRequestsListTileState extends State<PlayerRequestsListTile> with SingleTickerProviderStateMixin {
+class _PlayerWaitingForAcceptanceOfGameplayState extends State<PlayerWaitingForAcceptanceOfGameplay> with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation<double> scaleVal;
 
@@ -135,7 +134,7 @@ class _PlayerRequestsListTileState extends State<PlayerRequestsListTile> with Si
             ),
             SizedBox(
               width: 120,
-              child: MyText().small(context, "${widget.userName} requested a gameplay", adjust: -2),
+              child: MyText().small(context, "Waiting for ${widget.userName} to accept request", adjust: -2),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -144,26 +143,12 @@ class _PlayerRequestsListTileState extends State<PlayerRequestsListTile> with Si
                   onPressed: () async {
                     //On rejection
                     final String uid = Provider.of<DeviceProvider>(context, listen: false).userId;
-                    OnlinePlay(context).rejectGameplay(widget.gameplayID, widget.otherPlayerID, uid);
-                    if (context.mounted) {
-                      DeviceUtils.showFlushBar(context, "You rejected a gameplay with ${widget.userName}");
-                    }
+                    OnlinePlay().cancelRequestGameplay(uid, widget.otherPlayerID, widget.gameplayID);
                   },
                   icon: const Icon(
                     Icons.cancel_rounded,
                     size: 32,
                     color: Color.fromARGB(255, 193, 50, 40),
-                  ),
-                ),
-                IconButton(
-                  onPressed: () async {
-                    //On acceptance
-                    OnlinePlay(context).acceptGameplay(gameplayID: widget.gameplayID);
-                  },
-                  icon: const Icon(
-                    Icons.check_circle_outlined,
-                    size: 32,
-                    color: Colors.green,
                   ),
                 ),
               ],

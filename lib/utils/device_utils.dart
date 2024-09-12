@@ -127,9 +127,8 @@ class DeviceUtils {
     return false;
   }
 
-  static void showFlushBar(BuildContext context, String msg) {
-    if (context.mounted) {
-      Flushbar(
+  static void showFlushBar(BuildContext context, String msg) async{
+    await Flushbar(
         message: msg,
         messageColor: Theme.of(context).colorScheme.primary,
         duration: const Duration(milliseconds: 1500),
@@ -141,7 +140,6 @@ class DeviceUtils {
         backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.9),
         padding: const EdgeInsets.all(16),
       ).show(context);
-    }
   }
 
   static void pushMaterialPage(BuildContext context, Widget page){
