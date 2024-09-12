@@ -5,6 +5,7 @@ import 'package:tic_tac_toe/app.dart';
 import 'package:tic_tac_toe/common/widgets/loading_dialog.dart';
 import 'package:tic_tac_toe/data/shared_prefs_data_1.dart';
 import 'package:tic_tac_toe/models/gameplay.dart';
+import 'package:tic_tac_toe/services/online_play.dart';
 import 'package:tic_tac_toe/services/providers/device_provider.dart';
 import 'package:tic_tac_toe/utils/device_utils.dart';
 import 'package:tic_tac_toe/views/gameplay/online_widgets/launch_game_online_play.dart';
@@ -196,7 +197,7 @@ class OnlineProvider extends ChangeNotifier {
           
         }
       }else if(event.snapshot.value == "none" && _count == 9){
-        if (navigatorKey.currentContext!.mounted) showDialog(context: navigatorKey.currentContext!, builder: (context) => const LoadingDialog(canPop: false));
+        showDialog(context: navigatorKey.currentContext!, builder: (context) => const LoadingDialog(canPop: false));
 
         final Map<String, String> resetList = {for (int i = 0; i < SharedPrefsData1.defaultGameplayListGrid3.length; i++) i.toString(): SharedPrefsData1.defaultGameplayListGrid3[i].toString()};
         await dbReference.child("gameplayList").update({
@@ -213,19 +214,23 @@ class OnlineProvider extends ChangeNotifier {
                     message: "No one won", otherPlayerName: otherUserDataMap["userName"], otherPlayerPhotoURL: otherUserDataMap["photoURL"]));
           }
         }
-        dbReference.child("currentWinBy").onValue.listen((DatabaseEvent event) {
+        dbReference.child("endedSession").onValue.listen((DatabaseEvent event) {
           if(otherUserDataMap != null){
             if (event.snapshot.value == "newSession") {
-            _gameplayList = SharedPrefsData1.defaultGameplayListGrid3;
+            resetGameSession();
             Navigator.of(navigatorKey.currentContext!).pop();
-            DeviceUtils.pushMaterialPage(
-                navigatorKey.currentContext!,
-                LaunchGameOnlinePlay(
+            navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context){
+              return LaunchGameOnlinePlay(
                     gridType: 3,
                     gameplayID: currentOnlineGameplayID,
                     otherPlayerPhotoURL: otherUserDataMap["photoURL"],
-                    otherPlayerName: otherUserDataMap["userName"]));
+                    otherPlayerName: otherUserDataMap["userName"]);
+            }));
           }
+          }else if(event.snapshot.value == true){
+             Navigator.of(navigatorKey.currentContext!).pop();
+              Navigator.of(navigatorKey.currentContext!).pop();
+            OnlinePlay().endOnlineGame(currentOnlineGameplayID);
           }
         });
       }
